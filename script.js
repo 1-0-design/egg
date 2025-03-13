@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Load app eggs module
+    import('./src/utils/app-eggs.js')
+        .then(module => {
+            window.WeatherEgg = module.WeatherEgg;
+            window.MusicEgg = module.MusicEgg;
+        })
+        .catch(error => console.error('Error loading app eggs:', error));
+
     // DOM Elements
     const eggsContainer = document.querySelector('.eggs-container');
     const textarea = document.querySelector('textarea');
@@ -15,8 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add user message to chat
         addMessage(message, 'user');
         
-        // Create a new egg for the task
-        createEgg(message);
+        // Check for special commands
+        if (message.toLowerCase().includes('weather')) {
+            processWeatherRequest(message);
+        } else if (message.toLowerCase().includes('play') && message.toLowerCase().includes('music')) {
+            processMusicRequest(message);
+        } else {
+            // Create a regular egg for the task
+            createEgg(message);
+        }
         
         // Add assistant response
         setTimeout(() => {
@@ -35,6 +50,81 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Process weather request
+    async function processWeatherRequest(message) {
+        // Extract location from message (if any)
+        const locationMatch = message.match(/weather\s+(?:in|for|at)\s+([^?.,]+)/i);
+        const location = locationMatch ? locationMatch[1].trim() : null;
+        
+        // Create a processing egg
+        const eggId = 'weather-' + Date.now();
+        const eggElement = createProcessingEgg('Weather', eggId);
+        
+        // Add to container
+        eggsContainer.prepend(eggElement);
+        
+        try {
+            // Add response to chat
+            addMessage(`I'll check the weather${location ? ' for ' + location : ''} for you.`, 'assistant');
+            
+            // Fetch weather data
+            const weatherData = await window.WeatherEgg.fetchWeatherData(location);
+            
+            // Create weather egg
+            const weatherEgg = window.WeatherEgg.create(weatherData);
+            
+            // Replace processing egg with weather egg
+            eggsContainer.replaceChild(weatherEgg, eggElement);
+            
+            // Add completion message
+            addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°.`, 'assistant');
+        } catch (error) {
+            console.error('Weather error:', error);
+            completeEgg(eggElement, 'Weather');
+            addMessage('I had trouble getting the weather information. Please try again later.', 'assistant');
+        }
+    }
+    
+    // Process music request
+    async function processMusicRequest(message) {
+        // Extract song or artist from message
+        const songMatch = message.match(/play\s+(?:music|song|track)?\s*(?:by|from)?\s*([^?.,]+)/i);
+        const searchQuery = songMatch ? songMatch[1].trim() : 'popular songs';
+        
+        // Create a processing egg
+        const eggId = 'music-' + Date.now();
+        const eggElement = createProcessingEgg('Music', eggId);
+        
+        // Add to container
+        eggsContainer.prepend(eggElement);
+        
+        try {
+            // Add response to chat
+            addMessage(`I'll find and play music for "${searchQuery}" for you.`, 'assistant');
+            
+            // Search for tracks
+            const tracks = await window.MusicEgg.searchTracks(searchQuery);
+            
+            if (tracks && tracks.length > 0) {
+                // Create music egg with the first track
+                const musicEgg = window.MusicEgg.create(tracks[0]);
+                
+                // Replace processing egg with music egg
+                eggsContainer.replaceChild(musicEgg, eggElement);
+                
+                // Add completion message
+                addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+            } else {
+                completeEgg(eggElement, 'Music');
+                addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
+            }
+        } catch (error) {
+            console.error('Music error:', error);
+            completeEgg(eggElement, 'Music');
+            addMessage('I had trouble with the music playback. Please try again later.', 'assistant');
+        }
+    }
+    
     // Function to add message to chat
     function addMessage(content, sender) {
         const messageDiv = document.createElement('div');
@@ -51,26 +141,36 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    // Function to create a new egg
-    function createEgg(prompt) {
-        // Create a short summary (first 20 chars)
-        const summary = prompt.length > 20 ? prompt.substring(0, 20) + '...' : prompt;
-        
+    // Function to create a processing egg
+    function createProcessingEgg(summary, id) {
         // Create egg element
         const eggDiv = document.createElement('div');
         eggDiv.classList.add('egg', 'processing');
+        eggDiv.id = id;
         
         eggDiv.innerHTML = `
             <div class="egg-content">
                 <div class="egg-summary">${summary}</div>
                 <div class="egg-preview">
-                    <img src="placeholder-favicon.png" alt="Website Favicon" class="favicon">
+                    <img src="placeholder-favicon.svg" alt="Website Favicon" class="favicon">
                     <div class="preview-window">
                         <div class="placeholder-preview">Processing...</div>
                     </div>
                 </div>
             </div>
         `;
+        
+        return eggDiv;
+    }
+    
+    // Function to create a new egg
+    function createEgg(prompt) {
+        // Create a short summary (first 20 chars)
+        const summary = prompt.length > 20 ? prompt.substring(0, 20) + '...' : prompt;
+        
+        // Create egg element with an ID
+        const eggId = 'egg-' + Date.now();
+        const eggDiv = createProcessingEgg(summary, eggId);
         
         // Add click event to show full result when clicked
         eggDiv.addEventListener('click', () => {
@@ -82,21 +182,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Simulate processing completion after some time
         setTimeout(() => {
-            completeEgg(eggDiv);
+            completeEgg(eggDiv, summary);
         }, 5000); // 5 seconds for demo
     }
     
     // Function to mark egg as completed
-    function completeEgg(eggElement) {
+    function completeEgg(eggElement, summary) {
         eggElement.classList.remove('processing');
         eggElement.classList.add('completed');
         
         // Replace content with summary and checkmark
-        const summary = eggElement.querySelector('.egg-summary').textContent;
         eggElement.innerHTML = `
             <div class="egg-content">
                 <div class="egg-summary">${summary}</div>
-                <div class="checkmark">✓</div>
+                <div class="checkmark">
+                    <span class="icon icon-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </span>
+                </div>
             </div>
         `;
         

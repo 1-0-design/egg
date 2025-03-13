@@ -1,0 +1,174 @@
+/* Weather Egg Widget Styles */
+.egg.weather-egg {
+    min-width: 240px;
+    height: auto;
+    min-height: 100px;
+    max-height: 140px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.weather-widget {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+}
+
+.weather-location {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.weather-temp {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.weather-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
+}
+
+.weather-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.weather-detail {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.weather-detail .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Music Player Egg Styles */
+.egg.music-egg {
+    min-width: 300px;
+    height: auto;
+    min-height: 100px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.music-widget {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    padding: 0;
+    position: relative;
+}
+
+.album-artwork {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.music-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding: 10px 10px 10px 0;
+    overflow: hidden;
+}
+
+.track-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artist-name {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.music-control-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.music-control-button.play-pause {
+    width: 36px;
+    height: 36px;
+    background: #000;
+    color: #fff;
+}
+
+.music-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.music-progress-bar {
+    height: 100%;
+    background: #000;
+    width: 35%; /* This will be updated dynamically */
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .egg.weather-egg {
+        min-width: 200px;
+    }
+    
+    .egg.music-egg {
+        min-width: 250px;
+    }
+    
+    .weather-temp {
+        font-size: 28px;
+    }
+    
+    .weather-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
