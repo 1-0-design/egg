@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg - AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Eggs Container (top of screen) -->
+        <div class="eggs-container">
+            <!-- Example of a processing egg -->
+            <div class="egg processing">
+                <div class="egg-content">
+                    <div class="egg-summary">Research AI trends</div>
+                    <div class="egg-preview">
+                        <img src="placeholder-favicon.png" alt="Website Favicon" class="favicon">
+                        <div class="preview-window">
+                            <!-- Mini preview of content would go here -->
+                            <div class="placeholder-preview">Browsing research papers...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example of a completed egg -->
+            <div class="egg completed">
+                <div class="egg-content">
+                    <div class="egg-summary">Weather forecast</div>
+                    <div class="checkmark">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-messages">
+                <div class="message user-message">
+                    <div class="message-content">Show me the latest AI research trends</div>
+                </div>
+                <div class="message assistant-message">
+                    <div class="message-content">I'm working on finding the latest AI research trends for you. This may take a moment as I gather information from multiple sources.</div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <textarea placeholder="Ask anything..."></textarea>
+                <button class="send-button">Send</button>
+                <button class="voice-button">🎤</button>
+            </div>
+        </div>
+
+        <!-- Full Screen Result View (initially hidden) -->
+        <div class="result-view" style="display: none;">
+            <div class="result-header">
+                <div class="result-title">Research AI trends</div>
+                <div class="result-actions">
+                    <button class="share-button">Share Link</button>
+                    <button class="close-button">Close</button>
+                </div>
+            </div>
+            <div class="result-content">
+                <!-- Full results would go here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

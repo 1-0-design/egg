@@ -1,0 +1,41 @@
+{
+  "name": "egg-ai-assistant",
+  "version": "0.1.0",
+  "description": "An elegant AI assistant with a Vision OS-inspired interface",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'Build script placeholder'",
+    "test": "echo 'Test script placeholder'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1-0-design/egg.git"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "ui",
+    "vision-os",
+    "claude",
+    "anthropic",
+    "goose"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1-0-design/egg/issues"
+  },
+  "homepage": "https://github.com/1-0-design/egg#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.3",
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
