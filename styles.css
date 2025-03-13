@@ -10,6 +10,15 @@ body {
     color: #000;
     background-color: #fff;
     min-height: 100vh;
+    font-size: var(--font-size-base);
+}
+
+:root {
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --blur-effect: 15px;
 }
 
 .app-container {
@@ -25,8 +34,8 @@ body {
     gap: 15px;
     overflow-x: auto;
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(var(--blur-effect));
+    -webkit-backdrop-filter: blur(var(--blur-effect));
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     z-index: 10;
 }
@@ -40,8 +49,8 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(var(--blur-effect));
+    -webkit-backdrop-filter: blur(var(--blur-effect));
 }
 
 .egg.processing {
@@ -150,6 +159,7 @@ textarea {
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: rgba(0, 0, 0, 0.02);
     font-family: inherit;
+    font-size: inherit; /* Use inherited font size */
     resize: none;
     height: 50px;
     max-height: 150px;

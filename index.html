@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="src/styles/goose-settings.css">
     <link rel="stylesheet" href="src/styles/icons.css">
+    <link rel="stylesheet" href="src/styles/appearance.css">
 </head>
-<body>
+<body class="font-size-base">
     <div class="app-container">
         <!-- Eggs Container (top of screen) -->
         <div class="eggs-container">
@@ -177,8 +178,21 @@
                         </div>
                     </div>
                     <div class="setting-group">
+                        <label for="font-size">Font Size</label>
+                        <div class="font-size-options">
+                            <button class="font-size-option" data-size="sm">Small</button>
+                            <button class="font-size-option active" data-size="base">Medium</button>
+                            <button class="font-size-option" data-size="lg">Large</button>
+                            <button class="font-size-option" data-size="xl">Extra Large</button>
+                        </div>
+                    </div>
+                    <div class="setting-group">
                         <label for="blur-level">Blur Effect</label>
                         <input type="range" id="blur-level" min="0" max="20" step="1" value="15">
+                        <div class="range-labels">
+                            <span>None</span>
+                            <span>Maximum</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -243,6 +257,64 @@
                     option.classList.add('selected');
                 });
             });
+            
+            // Font size selection
+            const fontSizeOptions = document.querySelectorAll('.font-size-option');
+            fontSizeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove active class from all options
+                    fontSizeOptions.forEach(opt => opt.classList.remove('active'));
+                    // Add active class to selected option
+                    option.classList.add('active');
+                    
+                    // Get selected size
+                    const size = option.dataset.size;
+                    
+                    // Remove all font size classes from body
+                    document.body.classList.remove('font-size-sm', 'font-size-base', 'font-size-lg', 'font-size-xl');
+                    // Add selected size class
+                    document.body.classList.add(`font-size-${size}`);
+                    
+                    // Save preference
+                    localStorage.setItem('egg_font_size', size);
+                });
+            });
+            
+            // Blur effect slider
+            const blurSlider = document.getElementById('blur-level');
+            blurSlider.addEventListener('input', (e) => {
+                const blurValue = e.target.value;
+                document.documentElement.style.setProperty('--blur-effect', `${blurValue}px`);
+                localStorage.setItem('egg_blur_effect', blurValue);
+            });
+            
+            // Load saved preferences
+            function loadSavedPreferences() {
+                // Load font size preference
+                const savedFontSize = localStorage.getItem('egg_font_size');
+                if (savedFontSize) {
+                    document.body.classList.remove('font-size-sm', 'font-size-base', 'font-size-lg', 'font-size-xl');
+                    document.body.classList.add(`font-size-${savedFontSize}`);
+                    
+                    // Update active button
+                    fontSizeOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                        if (opt.dataset.size === savedFontSize) {
+                            opt.classList.add('active');
+                        }
+                    });
+                }
+                
+                // Load blur effect preference
+                const savedBlurEffect = localStorage.getItem('egg_blur_effect');
+                if (savedBlurEffect) {
+                    document.documentElement.style.setProperty('--blur-effect', `${savedBlurEffect}px`);
+                    blurSlider.value = savedBlurEffect;
+                }
+            }
+            
+            // Load preferences
+            loadSavedPreferences();
         });
     </script>
 </body>
