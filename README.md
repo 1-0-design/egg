@@ -22,10 +22,30 @@ An elegant AI assistant UI inspired by Vision OS, where tasks appear as "eggs" t
 
 - **Frontend**: HTML/CSS/JavaScript for prototype, React for production
 - **Backend**: Node.js with Express
-- **API Integration**: Anthropic Claude API
+- **API Integration**: Anthropic Claude API and Goose by Block
 - **Styling**: Custom CSS with Vision OS-inspired design
 - **Hosting**: Deployed via Render
 - **Version Control**: GitHub
+
+## Goose Integration
+
+Egg includes full integration with [Goose by Block](https://github.com/block/goose), a powerful local AI agent designed to automate development tasks. This integration allows Egg to leverage Goose's capabilities including:
+
+- Running complex scripts and automations
+- Controlling the computer to perform tasks
+- Web scraping and information gathering
+- Memory for persistent storage across sessions
+
+### Setting Up Goose
+
+To use Goose with Egg:
+
+1. Install Goose CLI or Desktop app from the [official repository](https://github.com/block/goose)
+2. Configure your LLM provider (Claude, GPT-4, or Google Gemini)
+3. Enable the Computer Controller extension in Goose
+4. Connect Egg to your Goose installation through the Settings panel
+
+See our settings panel for step-by-step instructions.
 
 ## Setup & Installation
 
@@ -33,7 +53,7 @@ An elegant AI assistant UI inspired by Vision OS, where tasks appear as "eggs" t
 
 - Node.js (v14 or newer)
 - npm or yarn
-- Anthropic API key (for Claude integration)
+- Anthropic API key (for Claude integration) or Goose by Block installation
 
 ### Local Development
 
