@@ -1,0 +1,261 @@
+/* Goose Settings Styles */
+.goose-settings {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.goose-settings h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.goose-settings h3 {
+  font-size: 18px;
+  margin: 25px 0 15px;
+  font-weight: 500;
+}
+
+.goose-settings h4 {
+  font-size: 16px;
+  margin: 15px 0 5px;
+  font-weight: 500;
+}
+
+/* Status Indicator */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.03);
+  margin-bottom: 20px;
+}
+
+.status-indicator.success {
+  background: rgba(0, 200, 0, 0.05);
+}
+
+.status-indicator.warning {
+  background: rgba(255, 200, 0, 0.05);
+}
+
+.status-indicator.error {
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.status-loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.status-success {
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 200, 0, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: green;
+  font-weight: bold;
+}
+
+.status-warning {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 200, 0, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aa7700;
+  font-weight: bold;
+}
+
+.status-error {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 0, 0, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Setup Guide */
+.setup-guide {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.setup-steps {
+  padding-left: 20px;
+}
+
+.setup-steps li {
+  margin-bottom: 15px;
+}
+
+.setup-steps p {
+  margin: 5px 0;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Settings Form */
+.settings-form {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.helper-text {
+  margin-top: 5px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Extensions Section */
+.extensions-section {
+  margin-top: 30px;
+}
+
+.extensions-list {
+  list-style: none;
+  padding: 0;
+}
+
+.extensions-list li {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.extensions-list li:last-child {
+  border-bottom: none;
+}
+
+.extension-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.extension-item span {
+  font-weight: 500;
+}
+
+.extensions-list p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Buttons */
+.btn {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.btn-primary:hover {
+  background: #333;
+}
+
+.btn.installed {
+  background: rgba(0, 200, 0, 0.1);
+  color: green;
+  border-color: rgba(0, 200, 0, 0.2);
+  cursor: default;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.install-extension {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .goose-settings {
+    padding: 15px;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .actions button {
+    width: 100%;
+  }
+}

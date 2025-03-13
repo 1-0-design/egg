@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Egg - AI Assistant</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/styles/goose-settings.css">
 </head>
 <body>
     <div class="app-container">
@@ -15,7 +16,7 @@
                 <div class="egg-content">
                     <div class="egg-summary">Research AI trends</div>
                     <div class="egg-preview">
-                        <img src="placeholder-favicon.png" alt="Website Favicon" class="favicon">
+                        <img src="placeholder-favicon.svg" alt="Website Favicon" class="favicon">
                         <div class="preview-window">
                             <!-- Mini preview of content would go here -->
                             <div class="placeholder-preview">Browsing research papers...</div>
@@ -49,6 +50,7 @@
                 <textarea placeholder="Ask anything..."></textarea>
                 <button class="send-button">Send</button>
                 <button class="voice-button">🎤</button>
+                <button class="settings-button" id="settings-toggle">⚙️</button>
             </div>
         </div>
 
@@ -65,8 +67,129 @@
                 <!-- Full results would go here -->
             </div>
         </div>
+        
+        <!-- Settings Panel (initially hidden) -->
+        <div class="settings-panel" style="display: none;">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="close-settings">×</button>
+            </div>
+            <div class="settings-tabs">
+                <button class="tab-button active" data-tab="general">General</button>
+                <button class="tab-button" data-tab="appearance">Appearance</button>
+                <button class="tab-button" data-tab="goose">Goose Integration</button>
+            </div>
+            <div class="settings-content">
+                <!-- General Settings Tab -->
+                <div class="tab-content active" id="general-tab">
+                    <div class="setting-group">
+                        <label for="api-provider">AI Provider</label>
+                        <select id="api-provider">
+                            <option value="anthropic">Anthropic Claude</option>
+                            <option value="goose">Goose by Block</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label for="api-key">API Key</label>
+                        <input type="password" id="api-key" placeholder="Enter your API key">
+                        <p class="helper-text">Your API key is stored locally and never sent to our servers</p>
+                    </div>
+                    <div class="setting-group">
+                        <label>Voice Input</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="voice-toggle" checked>
+                            <label for="voice-toggle"></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Tab -->
+                <div class="tab-content" id="appearance-tab">
+                    <div class="setting-group">
+                        <label>Theme</label>
+                        <div class="theme-options">
+                            <div class="theme-option selected">
+                                <div class="theme-preview light-theme"></div>
+                                <span>Light</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview dark-theme"></div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview system-theme"></div>
+                                <span>System</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label for="blur-level">Blur Effect</label>
+                        <input type="range" id="blur-level" min="0" max="20" step="1" value="15">
+                    </div>
+                </div>
+                
+                <!-- Goose Integration Tab -->
+                <div class="tab-content" id="goose-tab">
+                    <div id="goose-settings-container">
+                        <!-- GooseSettings component will render here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
+    <script type="module">
+        import GooseSettings from './src/components/GooseSettings.js';
+        
+        // Initialize settings panel functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsToggle = document.getElementById('settings-toggle');
+            const settingsPanel = document.querySelector('.settings-panel');
+            const closeSettings = document.querySelector('.close-settings');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Toggle settings panel
+            settingsToggle.addEventListener('click', () => {
+                settingsPanel.style.display = 'block';
+            });
+            
+            closeSettings.addEventListener('click', () => {
+                settingsPanel.style.display = 'none';
+            });
+            
+            // Tab switching
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Show selected tab content
+                    const tabName = button.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                    
+                    // Initialize Goose settings if that tab is selected
+                    if (tabName === 'goose') {
+                        const container = document.getElementById('goose-settings-container');
+                        GooseSettings.init(container);
+                    }
+                });
+            });
+            
+            // Theme selection
+            const themeOptions = document.querySelectorAll('.theme-option');
+            themeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    themeOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
