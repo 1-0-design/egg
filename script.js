@@ -5,36 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('Failed to load app-eggs.js:', err);
             return { WeatherEgg: null, MusicEgg: null };
         }),
-        import('./src/utils/app-eggs/tidal/index.js').catch(err => {
-            console.warn('Failed to load tidal index:', err);
-            return { default: null };
-        }),
-        import('./src/components/TidalPlayer.js').catch(err => {
-            console.warn('Failed to load TidalPlayer:', err);
+        import('./src/utils/app-eggs/music-preview/index.js').catch(err => {
+            console.warn('Failed to load music preview:', err);
             return { default: null };
         })
     ])
-        .then(([appEggsModule, tidalAppEggModule, TidalPlayerModule]) => {
+        .then(([appEggsModule, musicPreviewModule]) => {
             if (appEggsModule) {
                 window.WeatherEgg = appEggsModule.WeatherEgg;
                 window.MusicEgg = appEggsModule.MusicEgg;
             }
             
-            if (tidalAppEggModule && tidalAppEggModule.default) {
-                window.TidalAppEgg = tidalAppEggModule.default;
-            }
-            
-            if (TidalPlayerModule && TidalPlayerModule.default) {
-                window.TidalPlayer = TidalPlayerModule.default;
-                
-                try {
-                    // Initialize Tidal player
-                    window.tidalPlayer = new window.TidalPlayer();
-                    console.log('Tidal player initialized');
-                } catch (err) {
-                    console.error('Error initializing Tidal player:', err);
-                    window.tidalPlayer = null;
-                }
+            if (musicPreviewModule && musicPreviewModule.default) {
+                window.MusicPreviewEgg = musicPreviewModule.default;
             }
         })
         .catch(error => console.error('Error loading app eggs:', error));
@@ -146,184 +129,51 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add response to chat
             addMessage(`I'll find and play music for "${searchQuery}" for you.`, 'assistant');
             
-            // Check if Tidal player is available
-            if (window.tidalPlayer) {
-                // Check if player is authenticated
-                if (!window.tidalPlayer.isAuthenticated) {
-                    // Create Tidal Auth Egg
-                    completeEgg(eggElement, 'Authentication Required');
-                    
-                    // Create a Tidal auth container if it doesn't exist
-                    let tidalAuthContainer = document.getElementById('tidal-auth-container');
-                    if (!tidalAuthContainer) {
-                        tidalAuthContainer = document.createElement('div');
-                        tidalAuthContainer.id = 'tidal-auth-container';
-                        
-                        // Create a Tidal Auth Egg element
-                        const authEggElement = document.createElement('div');
-                        authEggElement.className = 'tidal-auth-egg';
-                        authEggElement.innerHTML = `
-                            <div class="tidal-auth-egg-icon">🔐</div>
-                            <div class="tidal-auth-egg-title">Tidal Authentication Required</div>
-                            <div class="tidal-auth-egg-subtitle">Click to connect your Tidal account</div>
-                        `;
-                        
-                        // Add click event to show the Tidal UI
-                        authEggElement.addEventListener('click', () => {
-                            // Show Tidal UI for authentication
-                            const tidalUIContainer = document.createElement('div');
-                            tidalUIContainer.id = 'tidal-ui-container';
-                            eggsContainer.insertBefore(tidalUIContainer, eggsContainer.firstChild);
-                            
-                            // Check if TidalAppEgg is available
-                            if (window.TidalAppEgg && typeof window.TidalAppEgg.init === 'function') {
-                                window.TidalAppEgg.init('tidal-ui-container');
-                            } else {
-                                // Fallback if the app egg isn't available
-                                tidalUIContainer.innerHTML = `
-                                    <div class="tidal-player">
-                                        <div class="tidal-header">
-                                            <div class="tidal-logo">TIDAL</div>
-                                        </div>
-                                        <div class="tidal-auth-section">
-                                            <h3>Connect to TIDAL</h3>
-                                            <p>Enter your TIDAL credentials to connect to your account.</p>
-                                            <div class="tidal-auth-form">
-                                                <input type="text" id="tidal-user-id" class="tidal-input" placeholder="Enter your Tidal User ID">
-                                                <input type="password" id="tidal-access-token" class="tidal-input" placeholder="Enter your Tidal Access Token">
-                                                <input type="password" id="tidal-refresh-token" class="tidal-input" placeholder="Refresh Token (optional)">
-                                                <button id="tidal-login-button" class="tidal-button">Connect to Tidal</button>
-                                            </div>
-                                            <p class="tidal-help-text">
-                                                Need help? <a href="https://github.com/gkasdorf/tidal-js/blob/main/README.md#retrieving-credentials" target="_blank">Read the guide</a> on how to get your credentials.
-                                            </p>
-                                        </div>
-                                    </div>
-                                `;
-                                
-                                // Add login event listener
-                                const loginButton = document.getElementById('tidal-login-button');
-                                if (loginButton) {
-                                    loginButton.addEventListener('click', () => {
-                                        const userIdInput = document.getElementById('tidal-user-id');
-                                        const accessTokenInput = document.getElementById('tidal-access-token');
-                                        const refreshTokenInput = document.getElementById('tidal-refresh-token');
-                                        
-                                        if (!userIdInput || !accessTokenInput) return;
-                                        
-                                        const userId = userIdInput.value.trim();
-                                        const accessToken = accessTokenInput.value.trim();
-                                        const refreshToken = refreshTokenInput ? refreshTokenInput.value.trim() : '';
-                                        
-                                        if (!userId || !accessToken) {
-                                            alert('Please enter your User ID and Access Token.');
-                                            return;
-                                        }
-                                        
-                                        // Try to authenticate
-                                        if (window.tidalPlayer) {
-                                            window.tidalPlayer.authenticate({
-                                                userId,
-                                                accessToken,
-                                                refreshToken: refreshToken || undefined
-                                            }).then(success => {
-                                                if (success) {
-                                                    // Remove the auth container
-                                                    tidalUIContainer.remove();
-                                                    // Refresh the page to show the player
-                                                    window.location.reload();
-                                                } else {
-                                                    alert('Failed to authenticate with Tidal. Please check your credentials.');
-                                                }
-                                            }).catch(error => {
-                                                console.error('Error authenticating:', error);
-                                                alert(`Error authenticating: ${error.message}`);
-                                            });
-                                        } else {
-                                            alert('Tidal player is not available. Please try again later.');
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                        
-                        tidalAuthContainer.appendChild(authEggElement);
-                        eggsContainer.prepend(tidalAuthContainer);
-                    }
-                    
-                    addMessage('To play music from Tidal, you need to authenticate first. Click on the "Authentication Required" egg to connect your Tidal account.', 'assistant');
-                    return;
-                }
+            // Create a music player container if it doesn't exist
+            let musicContainer = document.getElementById('music-player-container');
+            if (!musicContainer) {
+                musicContainer = document.createElement('div');
+                musicContainer.id = 'music-player-container';
+                eggsContainer.prepend(musicContainer);
+            }
+            
+            // Initialize music player with the container ID
+            if (window.MusicPreviewEgg && typeof window.MusicPreviewEgg.init === 'function') {
+                const musicPlayer = window.MusicPreviewEgg.init('music-player-container');
                 
-                // Search tracks on Tidal
-                const searchResults = await window.tidalPlayer.searchTracks(searchQuery);
-                
-                if (searchResults && searchResults.length > 0) {
-                    // Get the first track
-                    const track = searchResults[0];
+                // If we have a player, search for tracks and play the first one
+                if (musicPlayer && typeof musicPlayer.search === 'function') {
+                    await musicPlayer.search(searchQuery);
                     
-                    // Play the track
-                    await window.tidalPlayer.playTrack(track.id);
-                    
-                    // Get current track info
-                    const currentTrack = window.tidalPlayer.getCurrentTrack();
-                    
-                    // Replace processing egg with Tidal egg
-                    completeEgg(eggElement, 'Tidal Music');
-                    
-                    // Create a Tidal UI container if it doesn't exist
-                    let tidalContainer = document.getElementById('tidal-player-container');
-                    if (!tidalContainer) {
-                        tidalContainer = document.createElement('div');
-                        tidalContainer.id = 'tidal-player-container';
-                        eggsContainer.prepend(tidalContainer);
-                    }
-                    
-                    // Create Tidal UI
-                    if (window.TidalAppEgg && typeof window.TidalAppEgg.init === 'function') {
-                        window.TidalAppEgg.init('tidal-player-container');
-                    } else {
-                        // Fallback if TidalAppEgg isn't available
-                        tidalContainer.innerHTML = `
-                            <div class="tidal-now-playing">
-                                <div class="tidal-now-playing-image" style="background-image: url('https://resources.tidal.com/images/${currentTrack.album.cover}/320x320.jpg')"></div>
-                                <div class="tidal-now-playing-info">
-                                    <div class="tidal-now-playing-title">${currentTrack.title}</div>
-                                    <div class="tidal-now-playing-artist">${currentTrack.artist.name}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
+                    // Complete the egg
+                    completeEgg(eggElement, 'Music Preview');
                     
                     // Add completion message
-                    addMessage(`I'm now playing "${currentTrack.title}" by ${currentTrack.artist.name} from Tidal. You can control playback using the player above.`, 'assistant');
+                    addMessage(`I've found some music for "${searchQuery}". Click on a track to play a 30-second preview.`, 'assistant');
                 } else {
-                    completeEgg(eggElement, 'Tidal Music');
-                    addMessage('I couldn\'t find any tracks matching your request on Tidal. Please try a different search.', 'assistant');
+                    throw new Error('Music player not properly initialized');
+                }
+            } else if (window.MusicEgg && typeof window.MusicEgg.searchTracks === 'function') {
+                // Fallback to the original music egg if the new one isn't available
+                const tracks = await window.MusicEgg.searchTracks(searchQuery);
+                
+                if (tracks && tracks.length > 0) {
+                    // Create music egg with the first track
+                    const musicEgg = window.MusicEgg.create(tracks[0]);
+                    
+                    // Replace processing egg with music egg
+                    eggsContainer.replaceChild(musicEgg, eggElement);
+                    
+                    // Add completion message
+                    addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+                } else {
+                    completeEgg(eggElement, 'Music');
+                    addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
                 }
             } else {
-                // Fallback to the original music egg if Tidal isn't available
-                if (window.MusicEgg && typeof window.MusicEgg.searchTracks === 'function') {
-                    const tracks = await window.MusicEgg.searchTracks(searchQuery);
-                    
-                    if (tracks && tracks.length > 0) {
-                        // Create music egg with the first track
-                        const musicEgg = window.MusicEgg.create(tracks[0]);
-                        
-                        // Replace processing egg with music egg
-                        eggsContainer.replaceChild(musicEgg, eggElement);
-                        
-                        // Add completion message
-                        addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
-                    } else {
-                        completeEgg(eggElement, 'Music');
-                        addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
-                    }
-                } else {
-                    // No Tidal or MusicEgg available
-                    completeEgg(eggElement, 'Music Unavailable');
-                    addMessage('Sorry, I can\'t play music right now because the music service is unavailable. Please try again later.', 'assistant');
-                }
+                // No music player available
+                completeEgg(eggElement, 'Music Unavailable');
+                addMessage('Sorry, I can\'t play music right now because the music service is unavailable. Please try again later.', 'assistant');
             }
         } catch (error) {
             console.error('Music error:', error);
