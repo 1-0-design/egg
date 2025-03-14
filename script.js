@@ -191,20 +191,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 // Fallback to the original music egg if Tidal isn't available
-                const tracks = await window.MusicEgg.searchTracks(searchQuery);
-                
-                if (tracks && tracks.length > 0) {
-                    // Create music egg with the first track
-                    const musicEgg = window.MusicEgg.create(tracks[0]);
+                if (window.MusicEgg && typeof window.MusicEgg.searchTracks === 'function') {
+                    const tracks = await window.MusicEgg.searchTracks(searchQuery);
                     
-                    // Replace processing egg with music egg
-                    eggsContainer.replaceChild(musicEgg, eggElement);
-                    
-                    // Add completion message
-                    addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+                    if (tracks && tracks.length > 0) {
+                        // Create music egg with the first track
+                        const musicEgg = window.MusicEgg.create(tracks[0]);
+                        
+                        // Replace processing egg with music egg
+                        eggsContainer.replaceChild(musicEgg, eggElement);
+                        
+                        // Add completion message
+                        addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+                    } else {
+                        completeEgg(eggElement, 'Music');
+                        addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
+                    }
                 } else {
-                    completeEgg(eggElement, 'Music');
-                    addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
+                    // No Tidal or MusicEgg available
+                    completeEgg(eggElement, 'Music Unavailable');
+                    addMessage('Sorry, I can\'t play music right now because the music service is unavailable. Please try again later.', 'assistant');
                 }
             }
         } catch (error) {
