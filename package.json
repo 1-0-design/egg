@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "mkdir -p dist && cp -R src browser.html server.js package.json package-lock.json dist/"
+    "build": "mkdir -p dist && cp -R src index.html styles.css script.js server.js package.json package-lock.json dist/"
   },
   "engines": {
     "node": "16.x"
