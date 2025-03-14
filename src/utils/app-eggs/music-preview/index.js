@@ -10,6 +10,7 @@ const musicPreviewEgg = {
   width: 225, // 3:2 aspect ratio
   height: 150,
   hideAddedState: true, // Don't show checkmark when added
+  hideFromLibrary: true, // Hide from library after spawning player
   
   // Initialize the app egg
   init(containerId) {
