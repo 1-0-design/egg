@@ -104,17 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add response to chat
             addMessage(`I'll check the weather${location ? ' for ' + location : ' for your location'}.`, 'assistant');
             
-            // Fetch weather data
-            const weatherData = await window.WeatherEgg.fetchWeatherData(location);
-            
-            // Create weather egg
-            const weatherEgg = window.WeatherEgg.create(weatherData);
-            
-            // Replace processing egg with weather egg
-            eggsContainer.replaceChild(weatherEgg, eggElement);
-            
-            // Add completion message
-            addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°F.`, 'assistant');
+            // Check if WeatherEgg is available
+            if (window.WeatherEgg && typeof window.WeatherEgg.fetchWeatherData === 'function') {
+                // Fetch weather data
+                const weatherData = await window.WeatherEgg.fetchWeatherData(location);
+                
+                // Create weather egg
+                const weatherEgg = window.WeatherEgg.create(weatherData);
+                
+                // Replace processing egg with weather egg
+                eggsContainer.replaceChild(weatherEgg, eggElement);
+                
+                // Add completion message
+                addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°F.`, 'assistant');
+            } else {
+                // WeatherEgg not available
+                completeEgg(eggElement, 'Weather Unavailable');
+                addMessage('Sorry, I can\'t check the weather right now because the weather service is unavailable. Please try again later.', 'assistant');
+            }
         } catch (error) {
             console.error('Weather error:', error);
             completeEgg(eggElement, 'Weather');
