@@ -20,11 +20,17 @@ class AIResponse {
 
     // Create bubbles for each track
     const html = tracks.map(track => `
-      <div class="track-bubble" data-track-id="${track.id}">
-        <img src="${track.albumArt}" alt="${track.title} artwork" class="track-bubble-art">
-        <div class="track-bubble-info">
-          <div class="track-bubble-title">${track.title}</div>
-          <div class="track-bubble-artist">${track.artist}</div>
+      <div class="inline-flex h-[60px] items-center gap-2.5 relative bg-black rounded-[100px] shadow-[inset_0px_1px_1px_#ffffff40,0px_5px_15px_#00000026] pl-1.5 pr-[18px] py-[23px] text-white" data-track-id="${track.id}">
+        <div class="w-12 h-12 mt-[-17px] mb-[-17px] rounded-full overflow-hidden bg-gray-300">
+          <img src="${track.albumArt}" alt="${track.title} artwork" class="w-full h-full object-cover">
+        </div>
+        <div class="relative w-fit mt-[-0.50px] font-medium text-lg tracking-[0] leading-[normal] whitespace-nowrap">
+          ${track.title} - ${track.artist}
+        </div>
+        <div class="inline-flex flex-col items-center justify-center relative flex-[0_0_auto] mt-[-5px] mb-[-5px]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
         </div>
       </div>
     `).join('');
@@ -32,7 +38,7 @@ class AIResponse {
     resultsContainer.innerHTML = html;
 
     // Add click handlers
-    const bubbles = resultsContainer.querySelectorAll('.track-bubble');
+    const bubbles = resultsContainer.querySelectorAll('[data-track-id]');
     bubbles.forEach(bubble => {
       bubble.addEventListener('click', () => {
         const trackId = bubble.dataset.trackId;
@@ -51,64 +57,11 @@ const style = document.createElement('style');
 style.textContent = `
   .music-search-results {
     display: flex;
-    gap: 12px;
-    margin-top: 12px;
-    overflow-x: auto;
-    padding: 4px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .music-search-results::-webkit-scrollbar {
-    display: none;
-  }
-
-  .track-bubble {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  .track-bubble:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-  }
-
-  .track-bubble-art {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    object-fit: cover;
-  }
-
-  .track-bubble-info {
-    min-width: 120px;
-    max-width: 160px;
-  }
-
-  .track-bubble-title {
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-bubble-artist {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+    overflow-x: visible;
+    padding: 0;
   }
 `;
 

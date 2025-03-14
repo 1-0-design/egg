@@ -36,25 +36,82 @@ class TidalPlayerUI {
     // Check if the user is authenticated
     const isAuthenticated = this.player.isAuthenticated;
     
-    let html = 
-            <button class="tidal-logout-button" id="tidal-logout">Log Out</button>
-          ;
+    let html = `
+      <div class="tidal-player">
+        <div class="tidal-header">
+          <h2 class="tidal-title">TIDAL</h2>
+          ${isAuthenticated ? `
+            <button class="tidal-button" id="tidal-logout">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Log Out
+            </button>
+          ` : ''}
+        </div>
+    `;
     
     // Authentication section
     if (!isAuthenticated) {
-      html += ;
+      html += `
+        <div class="tidal-auth">
+          <input type="text" id="tidal-user-id" class="tidal-auth-input" placeholder="Enter your User ID" />
+          <input type="password" id="tidal-access-token" class="tidal-auth-input" placeholder="Enter your Access Token" />
+          <input type="password" id="tidal-refresh-token" class="tidal-auth-input" placeholder="Enter your Refresh Token (optional)" />
+          <button class="tidal-button tidal-button-primary" id="tidal-login-button">Connect to TIDAL</button>
+        </div>
+      `;
     } else {
       // Now Playing section
       const currentTrack = this.player.getCurrentTrack();
       if (currentTrack) {
-        html += ;
+        const isPlaying = this.player.isCurrentlyPlaying();
+        html += `
+          <div class="tidal-track">
+            <div class="tidal-track-art">
+              <img src="${currentTrack.album?.cover || '/placeholder.jpg'}" alt="${currentTrack.title}" />
+            </div>
+            <div class="tidal-track-info">
+              <div class="tidal-track-title">${currentTrack.title}</div>
+              <div class="tidal-track-artist">${currentTrack.artist?.name || 'Unknown Artist'}</div>
+            </div>
+            <button class="tidal-control-button" id="tidal-play-pause">
+              ${isPlaying ? `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+              ` : `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+              `}
+            </button>
+          </div>
+        `;
       }
       
       // Search section
-      html += ;
+      html += `
+        <div class="tidal-search">
+          <input type="text" id="tidal-search-input" class="tidal-search-input" placeholder="Search TIDAL" />
+          <button class="tidal-button" id="tidal-search-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="tidal-track-list" id="tidal-search-results">
+          ${this.renderSearchResults()}
+        </div>
+      `;
     }
     
-    html += ;
+    html += `</div>`;
     
     this.container.innerHTML = html;
   }
@@ -64,20 +121,29 @@ class TidalPlayerUI {
       return '<div class="tidal-loading">Search for tracks to get started</div>';
     }
     
-    let html = '';
-    
-    for (const result of this.searchResults) {
+    return this.searchResults.map(result => {
       const track = result.item || result;
       const artist = track.artist || (track.artists && track.artists[0]) || { name: 'Unknown Artist' };
       const album = track.album || { cover: null };
-      const coverUrl = album.cover 
-        ?  
-        : '/placeholder.jpg';
+      const coverUrl = album.cover || '/placeholder.jpg';
       
-      html += ;
-    }
-    
-    return html;
+      return `
+        <div class="tidal-track" data-track-id="${track.id}">
+          <div class="tidal-track-art">
+            <img src="${coverUrl}" alt="${track.title}" />
+          </div>
+          <div class="tidal-track-info">
+            <div class="tidal-track-title">${track.title}</div>
+            <div class="tidal-track-artist">${artist.name}</div>
+          </div>
+          <button class="tidal-control-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </button>
+        </div>
+      `;
+    }).join('');
   }
   
   renderPlaylists() {
@@ -85,18 +151,27 @@ class TidalPlayerUI {
       return '<div class="tidal-loading">Loading your playlists...</div>';
     }
     
-    let html = '';
-    
-    for (const playlist of this.playlists) {
+    return this.playlists.map(playlist => {
       const playlistData = playlist.data || playlist;
-      const coverUrl = playlistData.image 
-        ?  
-        : '/placeholder.jpg';
+      const coverUrl = playlistData.image || '/placeholder.jpg';
       
-      html += ;
-    }
-    
-    return html;
+      return `
+        <div class="tidal-track" data-playlist-id="${playlistData.id}">
+          <div class="tidal-track-art">
+            <img src="${coverUrl}" alt="${playlistData.title}" />
+          </div>
+          <div class="tidal-track-info">
+            <div class="tidal-track-title">${playlistData.title}</div>
+            <div class="tidal-track-artist">${playlistData.numberOfTracks} tracks</div>
+          </div>
+          <button class="tidal-control-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </button>
+        </div>
+      `;
+    }).join('');
   }
   
   attachEventListeners() {
@@ -128,24 +203,8 @@ class TidalPlayerUI {
       });
     }
     
-    // Playback controls
-    const playPauseButton = document.getElementById('tidal-play-pause');
-    if (playPauseButton) {
-      playPauseButton.addEventListener('click', () => this.handlePlayPause());
-    }
-    
-    const prevButton = document.getElementById('tidal-prev');
-    if (prevButton) {
-      prevButton.addEventListener('click', () => this.handlePrev());
-    }
-    
-    const nextButton = document.getElementById('tidal-next');
-    if (nextButton) {
-      nextButton.addEventListener('click', () => this.handleNext());
-    }
-    
     // Track selection
-    const trackElements = document.querySelectorAll('.tidal-track');
+    const trackElements = document.querySelectorAll('.tidal-track[data-track-id]');
     trackElements.forEach(track => {
       track.addEventListener('click', () => {
         const trackId = track.getAttribute('data-track-id');
@@ -156,7 +215,7 @@ class TidalPlayerUI {
     });
     
     // Playlist selection
-    const playlistElements = document.querySelectorAll('.tidal-playlist');
+    const playlistElements = document.querySelectorAll('.tidal-track[data-playlist-id]');
     playlistElements.forEach(playlist => {
       playlist.addEventListener('click', () => {
         const playlistId = playlist.getAttribute('data-playlist-id');
@@ -165,8 +224,18 @@ class TidalPlayerUI {
         }
       });
     });
+    
+    // Playback controls
+    const playPauseButton = document.getElementById('tidal-play-pause');
+    if (playPauseButton) {
+      playPauseButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handlePlayPause();
+      });
+    }
   }
   
+  // Event handlers
   async handleLogin() {
     const userIdInput = document.getElementById('tidal-user-id');
     const accessTokenInput = document.getElementById('tidal-access-token');
@@ -199,7 +268,7 @@ class TidalPlayerUI {
       }
     } catch (error) {
       console.error('Error authenticating:', error);
-      alert();
+      alert('Error connecting to TIDAL. Please try again.');
     }
   }
   
@@ -225,7 +294,7 @@ class TidalPlayerUI {
       this.attachEventListeners();
     } catch (error) {
       console.error('Error searching:', error);
-      alert();
+      alert('Error searching TIDAL. Please try again.');
     }
   }
   
@@ -237,7 +306,7 @@ class TidalPlayerUI {
       this.attachEventListeners();
     } catch (error) {
       console.error('Error playing track:', error);
-      alert();
+      alert('Error playing track. Please try again.');
     }
   }
   
@@ -249,16 +318,6 @@ class TidalPlayerUI {
     }
     this.render();
     this.attachEventListeners();
-  }
-  
-  handlePrev() {
-    // Implementation would depend on playlist context
-    console.log('Previous track');
-  }
-  
-  handleNext() {
-    // Implementation would depend on playlist context
-    console.log('Next track');
   }
   
   async handleOpenPlaylist(playlistId) {
@@ -275,10 +334,9 @@ class TidalPlayerUI {
       }
     } catch (error) {
       console.error('Error opening playlist:', error);
-      alert();
+      alert('Error opening playlist. Please try again.');
     }
   }
 }
 
-// Export the TidalPlayerUI class
 export default TidalPlayerUI;

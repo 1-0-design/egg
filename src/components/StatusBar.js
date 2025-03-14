@@ -10,8 +10,45 @@ class StatusBar {
     }
 
     // Initialize the status bar
+    this.addStyles();
     this.render();
     this.startClock();
+  }
+
+  addStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        padding: 30px;
+        font-family: 'Cash Sans-Medium', Helvetica;
+      }
+
+      .status-bar-account {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .status-bar-account::before {
+        content: '';
+        width: 12px;
+        height: 12px;
+        background: hsl(142.1 76.2% 36.3%);
+        border-radius: 100px;
+      }
+
+      .status-bar-time {
+        font-family: 'Cash Sans-Semibold', Helvetica;
+        font-size: 18px;
+        text-align: right;
+        color: hsl(var(--foreground));
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   render() {
