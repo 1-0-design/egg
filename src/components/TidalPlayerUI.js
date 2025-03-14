@@ -4,15 +4,20 @@
 import TidalPlayer from './TidalPlayer.js';
 
 // Load the CSS
-document.head.innerHTML += `
-  <link rel="stylesheet" href="/src/styles/tidal-player.css">
-`;
+try {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = '/src/styles/tidal-player.css';
+  document.head.appendChild(link);
+} catch (e) {
+  console.error('Error loading Tidal player CSS:', e);
+}
 
 class TidalPlayerUI {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
-      console.error(`Container with ID "${containerId}" not found.`);
+      console.error();
       return;
     }
     
@@ -31,86 +36,25 @@ class TidalPlayerUI {
     // Check if the user is authenticated
     const isAuthenticated = this.player.isAuthenticated;
     
-    let html = `
-      <div class="tidal-player">
-        <div class="tidal-header">
-          <div class="tidal-logo">TIDAL</div>
-          ${isAuthenticated ? `
+    let html = 
             <button class="tidal-logout-button" id="tidal-logout">Log Out</button>
-          ` : ''}
-        </div>
-    `;
+          ;
     
     // Authentication section
     if (!isAuthenticated) {
-      html += `
-        <div class="tidal-auth-section">
-          <h3>Connect to TIDAL</h3>
-          <p>Enter your TIDAL credentials to connect to your account.</p>
-          <div class="tidal-auth-form">
-            <input type="text" id="tidal-user-id" class="tidal-input" placeholder="Enter your Tidal User ID">
-            <input type="password" id="tidal-access-token" class="tidal-input" placeholder="Enter your Tidal Access Token">
-            <input type="password" id="tidal-refresh-token" class="tidal-input" placeholder="Refresh Token (optional)">
-            <button id="tidal-login-button" class="tidal-button">Connect to Tidal</button>
-          </div>
-          <p class="tidal-help-text">
-            Need help? <a href="https://github.com/gkasdorf/tidal-js/blob/main/README.md#retrieving-credentials" target="_blank">Read the guide</a> on how to get your credentials.
-          </p>
-        </div>
-      `;
+      html += ;
     } else {
       // Now Playing section
       const currentTrack = this.player.getCurrentTrack();
       if (currentTrack) {
-        html += `
-          <div class="tidal-now-playing">
-            <div class="tidal-now-playing-image" style="background-image: url('https://resources.tidal.com/images/${currentTrack.album.cover}/320x320.jpg')"></div>
-            <div class="tidal-now-playing-info">
-              <div class="tidal-now-playing-title">${currentTrack.title}</div>
-              <div class="tidal-now-playing-artist">${currentTrack.artist.name}</div>
-            </div>
-          </div>
-          
-          <div class="tidal-player-controls">
-            <button class="tidal-control-button" id="tidal-prev">
-              <i class="icon-skip-back"></i>
-            </button>
-            <button class="tidal-control-button play-pause" id="tidal-play-pause">
-              <i class="${this.player.isCurrentlyPlaying() ? 'icon-pause' : 'icon-play'}"></i>
-            </button>
-            <button class="tidal-control-button" id="tidal-next">
-              <i class="icon-skip-forward"></i>
-            </button>
-            <button class="tidal-control-button" id="tidal-volume">
-              <i class="icon-volume-2"></i>
-            </button>
-          </div>
-        `;
+        html += ;
       }
       
       // Search section
-      html += `
-        <div class="tidal-search-section">
-          <div class="tidal-search-container">
-            <input type="text" id="tidal-search-input" class="tidal-search-input" placeholder="Search for tracks, artists, albums...">
-            <button id="tidal-search-button" class="tidal-button">Search</button>
-          </div>
-          <div class="tidal-search-results" id="tidal-search-results">
-            ${this.renderSearchResults()}
-          </div>
-        </div>
-        
-        <!-- Playlists section -->
-        <div class="tidal-playlists-section">
-          <div class="tidal-playlists-header">Your Playlists</div>
-          <div class="tidal-playlists" id="tidal-playlists">
-            ${this.renderPlaylists()}
-          </div>
-        </div>
-      `;
+      html += ;
     }
     
-    html += `</div>`;
+    html += ;
     
     this.container.innerHTML = html;
   }
@@ -127,18 +71,10 @@ class TidalPlayerUI {
       const artist = track.artist || (track.artists && track.artists[0]) || { name: 'Unknown Artist' };
       const album = track.album || { cover: null };
       const coverUrl = album.cover 
-        ? `https://resources.tidal.com/images/${album.cover}/80x80.jpg` 
+        ?  
         : '/placeholder.jpg';
       
-      html += `
-        <div class="tidal-track" data-track-id="${track.id}">
-          <div class="tidal-track-image" style="background-image: url('${coverUrl}')"></div>
-          <div class="tidal-track-info">
-            <div class="tidal-track-title">${track.title}</div>
-            <div class="tidal-track-artist">${artist.name}</div>
-          </div>
-        </div>
-      `;
+      html += ;
     }
     
     return html;
@@ -154,18 +90,10 @@ class TidalPlayerUI {
     for (const playlist of this.playlists) {
       const playlistData = playlist.data || playlist;
       const coverUrl = playlistData.image 
-        ? `https://resources.tidal.com/images/${playlistData.image}/320x320.jpg` 
+        ?  
         : '/placeholder.jpg';
       
-      html += `
-        <div class="tidal-playlist" data-playlist-id="${playlistData.uuid}">
-          <div class="tidal-playlist-image" style="background-image: url('${coverUrl}')"></div>
-          <div class="tidal-playlist-info">
-            <div class="tidal-playlist-title">${playlistData.title}</div>
-            <div class="tidal-playlist-tracks">${playlistData.numberOfTracks || 0} tracks</div>
-          </div>
-        </div>
-      `;
+      html += ;
     }
     
     return html;
@@ -271,7 +199,7 @@ class TidalPlayerUI {
       }
     } catch (error) {
       console.error('Error authenticating:', error);
-      alert(`Error authenticating: ${error.message}`);
+      alert();
     }
   }
   
@@ -297,7 +225,7 @@ class TidalPlayerUI {
       this.attachEventListeners();
     } catch (error) {
       console.error('Error searching:', error);
-      alert(`Error searching: ${error.message}`);
+      alert();
     }
   }
   
@@ -309,7 +237,7 @@ class TidalPlayerUI {
       this.attachEventListeners();
     } catch (error) {
       console.error('Error playing track:', error);
-      alert(`Error playing track: ${error.message}`);
+      alert();
     }
   }
   
@@ -347,7 +275,7 @@ class TidalPlayerUI {
       }
     } catch (error) {
       console.error('Error opening playlist:', error);
-      alert(`Error opening playlist: ${error.message}`);
+      alert();
     }
   }
 }
