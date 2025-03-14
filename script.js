@@ -121,19 +121,38 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.tidalPlayer) {
                 // Check if player is authenticated
                 if (!window.tidalPlayer.isAuthenticated) {
+                    // Create Tidal Auth Egg
+                    completeEgg(eggElement, 'Authentication Required');
+                    
                     // Create a Tidal auth container if it doesn't exist
                     let tidalAuthContainer = document.getElementById('tidal-auth-container');
                     if (!tidalAuthContainer) {
                         tidalAuthContainer = document.createElement('div');
                         tidalAuthContainer.id = 'tidal-auth-container';
+                        
+                        // Create a Tidal Auth Egg element
+                        const authEggElement = document.createElement('div');
+                        authEggElement.className = 'tidal-auth-egg';
+                        authEggElement.innerHTML = `
+                            <div class="tidal-auth-egg-icon">🔐</div>
+                            <div class="tidal-auth-egg-title">Tidal Authentication Required</div>
+                            <div class="tidal-auth-egg-subtitle">Click to connect your Tidal account</div>
+                        `;
+                        
+                        // Add click event to show the Tidal UI
+                        authEggElement.addEventListener('click', () => {
+                            // Show Tidal UI for authentication
+                            const tidalUIContainer = document.createElement('div');
+                            tidalUIContainer.id = 'tidal-ui-container';
+                            eggsContainer.insertBefore(tidalUIContainer, eggsContainer.firstChild);
+                            window.TidalAppEgg.init('tidal-ui-container');
+                        });
+                        
+                        tidalAuthContainer.appendChild(authEggElement);
                         eggsContainer.prepend(tidalAuthContainer);
                     }
                     
-                    // Create Tidal UI for authentication
-                    window.TidalAppEgg.init('tidal-auth-container');
-                    
-                    completeEgg(eggElement, 'Tidal Music');
-                    addMessage('To play music, you need to authenticate with Tidal first. Please enter your Tidal credentials in the form above.', 'assistant');
+                    addMessage('To play music from Tidal, you need to authenticate first. Click on the "Authentication Required" egg to connect your Tidal account.', 'assistant');
                     return;
                 }
                 

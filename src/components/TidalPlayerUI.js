@@ -48,10 +48,10 @@ class TidalPlayerUI {
           <h3>Connect to TIDAL</h3>
           <p>Enter your TIDAL credentials to connect to your account.</p>
           <div class="tidal-auth-form">
-            <input type="text" id="tidal-user-id" class="tidal-input" placeholder="User ID">
-            <input type="text" id="tidal-access-token" class="tidal-input" placeholder="Access Token">
-            <input type="text" id="tidal-refresh-token" class="tidal-input" placeholder="Refresh Token (optional)">
-            <button id="tidal-login-button" class="tidal-button">Connect</button>
+            <input type="text" id="tidal-user-id" class="tidal-input" placeholder="Enter your Tidal User ID">
+            <input type="password" id="tidal-access-token" class="tidal-input" placeholder="Enter your Tidal Access Token">
+            <input type="password" id="tidal-refresh-token" class="tidal-input" placeholder="Refresh Token (optional)">
+            <button id="tidal-login-button" class="tidal-button">Connect to Tidal</button>
           </div>
           <p class="tidal-help-text">
             Need help? <a href="https://github.com/gkasdorf/tidal-js/blob/main/README.md#retrieving-credentials" target="_blank">Read the guide</a> on how to get your credentials.
@@ -354,3 +354,4 @@ class TidalPlayerUI {
 
 // Export the TidalPlayerUI class
 export default TidalPlayerUI;
+EOL 2>&1

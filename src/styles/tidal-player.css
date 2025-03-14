@@ -7,10 +7,10 @@
   margin: 0 auto;
   padding: 20px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
 }
 
@@ -24,13 +24,30 @@
 .tidal-logo {
   font-size: 24px;
   font-weight: 600;
+  color: #00ffff;
 }
 
 .tidal-auth-section {
   padding: 20px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   margin-bottom: 20px;
+  border: 1px solid rgba(0, 171, 255, 0.3);
+}
+
+.tidal-help-text {
+  margin-top: 15px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tidal-help-text a {
+  color: #00ffff;
+  text-decoration: none;
+}
+
+.tidal-help-text a:hover {
+  text-decoration: underline;
 }
 
 .tidal-auth-form {
@@ -42,10 +59,14 @@
 .tidal-input {
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 171, 255, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
   font-size: 14px;
+}
+
+.tidal-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .tidal-button {
@@ -78,18 +99,23 @@
   flex: 1;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 171, 255, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
   font-size: 14px;
+}
+
+.tidal-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .tidal-search-results {
   max-height: 300px;
   overflow-y: auto;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tidal-track {
@@ -99,10 +125,11 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
+  margin-bottom: 5px;
 }
 
 .tidal-track:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 171, 255, 0.2);
 }
 
 .tidal-track-image {
@@ -136,7 +163,8 @@
   margin-top: 20px;
   padding: 15px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tidal-control-button {
@@ -169,8 +197,9 @@
   align-items: center;
   padding: 15px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.5);
   margin-bottom: 20px;
+  border: 1px solid rgba(0, 171, 255, 0.3);
 }
 
 .tidal-now-playing-image {
@@ -205,6 +234,7 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
+  color: #00ffff;
 }
 
 .tidal-playlists {
@@ -218,10 +248,12 @@
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tidal-playlist:hover {
   transform: translateY(-5px);
+  border-color: rgba(0, 171, 255, 0.5);
 }
 
 .tidal-playlist-image {
@@ -233,7 +265,7 @@
 
 .tidal-playlist-info {
   padding: 10px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .tidal-playlist-title {
@@ -253,7 +285,7 @@
   padding: 8px 16px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.4);
   color: #ffffff;
   cursor: pointer;
   transition: background 0.2s;
@@ -267,15 +299,16 @@
 .tidal-loading {
   text-align: center;
   padding: 20px;
-  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .tidal-error {
-  color: #ff4d4d;
+  color: #ff6b6b;
   padding: 10px;
   border-radius: 8px;
-  background: rgba(255, 77, 77, 0.1);
+  background: rgba(255, 77, 77, 0.2);
   margin-bottom: 15px;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 /* Responsive adjustments */
@@ -292,3 +325,37 @@
     height: 120px;
   }
 }
+
+/* Tidal Auth Egg Styling */
+.tidal-auth-egg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 171, 255, 0.3);
+  color: white;
+}
+
+.tidal-auth-egg-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #00ffff;
+}
+
+.tidal-auth-egg-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.tidal-auth-egg-subtitle {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+}
+EOL 2>&1
