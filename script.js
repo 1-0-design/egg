@@ -1,9 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Load app eggs module
-    import('./src/utils/app-eggs.js')
-        .then(module => {
-            window.WeatherEgg = module.WeatherEgg;
-            window.MusicEgg = module.MusicEgg;
+    // Load app eggs modules
+    Promise.all([
+        import('./src/utils/app-eggs.js'),
+        import('./src/utils/app-eggs/tidal/index.js'),
+        import('./src/components/TidalPlayer.js')
+    ])
+        .then(([appEggsModule, tidalAppEggModule, TidalPlayerModule]) => {
+            window.WeatherEgg = appEggsModule.WeatherEgg;
+            window.MusicEgg = appEggsModule.MusicEgg;
+            window.TidalAppEgg = tidalAppEggModule.default;
+            window.TidalPlayer = TidalPlayerModule.default;
+            
+            // Initialize Tidal player
+            window.tidalPlayer = new window.TidalPlayer();
+            console.log('Tidal player initialized');
         })
         .catch(error => console.error('Error loading app eggs:', error));
 
@@ -26,7 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check for special commands
         if (message.toLowerCase().includes('weather')) {
             processWeatherRequest(message);
-        } else if (message.toLowerCase().includes('play') && message.toLowerCase().includes('music')) {
+        } else if (
+            message.toLowerCase().includes('play') || 
+            message.toLowerCase().includes('music') || 
+            message.toLowerCase().includes('song') || 
+            message.toLowerCase().includes('tidal')
+        ) {
             processMusicRequest(message);
         } else {
             // Create a regular egg for the task
@@ -102,26 +117,81 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add response to chat
             addMessage(`I'll find and play music for "${searchQuery}" for you.`, 'assistant');
             
-            // Search for tracks
-            const tracks = await window.MusicEgg.searchTracks(searchQuery);
-            
-            if (tracks && tracks.length > 0) {
-                // Create music egg with the first track
-                const musicEgg = window.MusicEgg.create(tracks[0]);
+            // Check if Tidal player is available
+            if (window.tidalPlayer) {
+                // Check if player is authenticated
+                if (!window.tidalPlayer.isAuthenticated) {
+                    // Create a Tidal auth container if it doesn't exist
+                    let tidalAuthContainer = document.getElementById('tidal-auth-container');
+                    if (!tidalAuthContainer) {
+                        tidalAuthContainer = document.createElement('div');
+                        tidalAuthContainer.id = 'tidal-auth-container';
+                        eggsContainer.prepend(tidalAuthContainer);
+                    }
+                    
+                    // Create Tidal UI for authentication
+                    const tidalUI = new window.TidalAppEgg.init('tidal-auth-container');
+                    
+                    completeEgg(eggElement, 'Tidal Music');
+                    addMessage('To play music, you need to authenticate with Tidal first. Please enter your Tidal credentials in the form above.', 'assistant');
+                    return;
+                }
                 
-                // Replace processing egg with music egg
-                eggsContainer.replaceChild(musicEgg, eggElement);
+                // Search tracks on Tidal
+                const searchResults = await window.tidalPlayer.searchTracks(searchQuery);
                 
-                // Add completion message
-                addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+                if (searchResults && searchResults.length > 0) {
+                    // Get the first track
+                    const track = searchResults[0];
+                    
+                    // Play the track
+                    await window.tidalPlayer.playTrack(track.id);
+                    
+                    // Get current track info
+                    const currentTrack = window.tidalPlayer.getCurrentTrack();
+                    
+                    // Replace processing egg with Tidal egg
+                    completeEgg(eggElement, 'Tidal Music');
+                    
+                    // Create a Tidal UI container if it doesn't exist
+                    let tidalContainer = document.getElementById('tidal-player-container');
+                    if (!tidalContainer) {
+                        tidalContainer = document.createElement('div');
+                        tidalContainer.id = 'tidal-player-container';
+                        eggsContainer.prepend(tidalContainer);
+                    }
+                    
+                    // Create Tidal UI
+                    const tidalUI = new window.TidalAppEgg.init('tidal-player-container');
+                    
+                    // Add completion message
+                    addMessage(`I'm now playing "${currentTrack.title}" by ${currentTrack.artist.name} from Tidal. You can control playback using the player above.`, 'assistant');
+                } else {
+                    completeEgg(eggElement, 'Tidal Music');
+                    addMessage('I couldn\'t find any tracks matching your request on Tidal. Please try a different search.', 'assistant');
+                }
             } else {
-                completeEgg(eggElement, 'Music');
-                addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
+                // Fallback to the original music egg if Tidal isn't available
+                const tracks = await window.MusicEgg.searchTracks(searchQuery);
+                
+                if (tracks && tracks.length > 0) {
+                    // Create music egg with the first track
+                    const musicEgg = window.MusicEgg.create(tracks[0]);
+                    
+                    // Replace processing egg with music egg
+                    eggsContainer.replaceChild(musicEgg, eggElement);
+                    
+                    // Add completion message
+                    addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
+                } else {
+                    completeEgg(eggElement, 'Music');
+                    addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
+                }
             }
         } catch (error) {
             console.error('Music error:', error);
             completeEgg(eggElement, 'Music');
-            addMessage('I had trouble with the music playback. Please try again later.', 'assistant');
+            addMessage('I had trouble with the music playback. Please try again later. Error: ' + error.message, 'assistant');
         }
     }
     
