@@ -9,6 +9,7 @@ const musicPreviewEgg = {
   category: "Media",
   width: 225, // 3:2 aspect ratio
   height: 150,
+  hideAddedState: true, // Don't show checkmark when added
   
   // Initialize the app egg
   init(containerId) {

@@ -38,12 +38,13 @@
 }
 
 .album-artwork {
-  width: 126px; /* Square artwork matching the height */
-  height: 126px;
-  border-radius: 10px;
+  width: 80px; /* Smaller artwork to fit in egg */
+  height: 80px;
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   object-fit: cover;
   background: #222;
+  flex-shrink: 0;
 }
 
 .player-right {
@@ -58,16 +59,16 @@
 }
 
 .track-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .track-artist {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 2px;
   white-space: nowrap;
@@ -113,8 +114,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
   margin-top: auto;
+  padding-top: 8px;
 }
 
 .control-button {
@@ -129,8 +131,8 @@
   justify-content: center;
   opacity: 0.8;
   transition: all 0.2s;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .control-button:hover {
@@ -139,18 +141,18 @@
 }
 
 .control-button svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 #play-button {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 #play-button svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .loading {
