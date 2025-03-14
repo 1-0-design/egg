@@ -17,7 +17,7 @@ class MusicPlayer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
-      console.error(`Container with ID "${containerId}" not found.`);
+      console.error();
       return;
     }
     
@@ -43,118 +43,36 @@ class MusicPlayer {
   render() {
     if (!this.container) return;
     
-    let html = `
-      <div class="music-player">
-        <div class="music-player-header">
-          <div class="music-player-title">Music Preview Player</div>
-          <div class="music-player-logo">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18V5l12-2v13"></path>
-              <circle cx="6" cy="18" r="3"></circle>
-              <circle cx="18" cy="16" r="3"></circle>
-            </svg>
-          </div>
-        </div>
-    `;
+    let html = ;
     
     // Show track information if we have a current track
     if (this.currentTrack) {
-      html += `
-        <img src="${this.currentTrack.albumArt}" alt="${this.currentTrack.title}" class="album-artwork">
-        <div class="track-info">
-          <div class="track-title">${this.currentTrack.title}</div>
-          <div class="artist-name">${this.currentTrack.artist}</div>
-          <div class="album-name">${this.currentTrack.album} (${this.currentTrack.releaseDate})</div>
-        </div>
-        
-        <div class="timeline">
-          <div class="current-time">0:00</div>
-          <div class="duration">0:30</div>
-        </div>
-        
-        <div class="progress-container" id="progress-container">
-          <div class="progress-bar" style="width: 0%"></div>
-        </div>
-        
-        <div class="controls">
-          <button class="control-button prev-button" id="prev-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="19 20 9 12 19 4 19 20"></polygon>
-              <line x1="5" y1="19" x2="5" y2="5"></line>
-            </svg>
-          </button>
-          <button class="control-button play-button" id="play-button">
-            ${this.isPlaying 
-              ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      html += <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="6" y="4" width="4" height="16"></rect>
                   <rect x="14" y="4" width="4" height="16"></rect>
-                </svg>`
-              : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>`
-            }
-          </button>
-          <button class="control-button next-button" id="next-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="5 4 15 12 5 20 5 4"></polygon>
-              <line x1="19" y1="5" x2="19" y2="19"></line>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="volume-container">
-          <span class="volume-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-            </svg>
-          </span>
-          <input type="range" min="0" max="1" step="0.05" value="0.7" class="volume-slider" id="volume-slider">
-        </div>
-      `;
+                </svg>;
     } else {
       // If no track is loaded, show a placeholder
-      html += `
-        <div class="loading">
-          Select a track to start playing
-        </div>
-      `;
+      html += ;
     }
     
     // Search box for finding tracks
-    html += `
-      <div class="search-container">
-        <input type="text" id="search-input" class="search-input" placeholder="Search for music...">
-        <button id="search-button" class="search-button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </button>
-      </div>
-    `;
+    html += ;
     
     // Show search results if available
     if (this.searchResults && this.searchResults.length > 0) {
-      html += `<div class="search-results">`;
+      html += ;
       
       for (const track of this.searchResults) {
-        html += `
-          <div class="search-result" data-track-id="${track.id}">
-            <img src="${track.albumArt}" alt="${track.title}" class="search-result-img">
-            <div class="search-result-info">
-              <div class="search-result-title">${track.title}</div>
-              <div class="search-result-artist">${track.artist}</div>
-            </div>
-          </div>
-        `;
+        html += ;
       }
       
-      html += `</div>`;
+      html += ;
     }
     
-    html += `</div>`;
+    html += ;
     
     this.container.innerHTML = html;
   }
@@ -348,14 +266,14 @@ class MusicPlayer {
       
       // Update progress bar
       const percent = (currentTime / duration) * 100;
-      progressBar.style.width = `${percent}%`;
+      progressBar.style.width = ;
     }
   }
   
   formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return ;
   }
   
   getCurrentTrack() {
@@ -368,4 +286,3 @@ class MusicPlayer {
 }
 
 export default MusicPlayer;
-EOF 2>&1

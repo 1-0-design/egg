@@ -20,4 +20,3 @@ const musicPreviewEgg = {
 };
 
 export default musicPreviewEgg;
-EOF 2>&1
