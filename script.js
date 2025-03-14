@@ -174,7 +174,77 @@ document.addEventListener('DOMContentLoaded', () => {
                             const tidalUIContainer = document.createElement('div');
                             tidalUIContainer.id = 'tidal-ui-container';
                             eggsContainer.insertBefore(tidalUIContainer, eggsContainer.firstChild);
-                            window.TidalAppEgg.init('tidal-ui-container');
+                            
+                            // Check if TidalAppEgg is available
+                            if (window.TidalAppEgg && typeof window.TidalAppEgg.init === 'function') {
+                                window.TidalAppEgg.init('tidal-ui-container');
+                            } else {
+                                // Fallback if the app egg isn't available
+                                tidalUIContainer.innerHTML = `
+                                    <div class="tidal-player">
+                                        <div class="tidal-header">
+                                            <div class="tidal-logo">TIDAL</div>
+                                        </div>
+                                        <div class="tidal-auth-section">
+                                            <h3>Connect to TIDAL</h3>
+                                            <p>Enter your TIDAL credentials to connect to your account.</p>
+                                            <div class="tidal-auth-form">
+                                                <input type="text" id="tidal-user-id" class="tidal-input" placeholder="Enter your Tidal User ID">
+                                                <input type="password" id="tidal-access-token" class="tidal-input" placeholder="Enter your Tidal Access Token">
+                                                <input type="password" id="tidal-refresh-token" class="tidal-input" placeholder="Refresh Token (optional)">
+                                                <button id="tidal-login-button" class="tidal-button">Connect to Tidal</button>
+                                            </div>
+                                            <p class="tidal-help-text">
+                                                Need help? <a href="https://github.com/gkasdorf/tidal-js/blob/main/README.md#retrieving-credentials" target="_blank">Read the guide</a> on how to get your credentials.
+                                            </p>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                // Add login event listener
+                                const loginButton = document.getElementById('tidal-login-button');
+                                if (loginButton) {
+                                    loginButton.addEventListener('click', () => {
+                                        const userIdInput = document.getElementById('tidal-user-id');
+                                        const accessTokenInput = document.getElementById('tidal-access-token');
+                                        const refreshTokenInput = document.getElementById('tidal-refresh-token');
+                                        
+                                        if (!userIdInput || !accessTokenInput) return;
+                                        
+                                        const userId = userIdInput.value.trim();
+                                        const accessToken = accessTokenInput.value.trim();
+                                        const refreshToken = refreshTokenInput ? refreshTokenInput.value.trim() : '';
+                                        
+                                        if (!userId || !accessToken) {
+                                            alert('Please enter your User ID and Access Token.');
+                                            return;
+                                        }
+                                        
+                                        // Try to authenticate
+                                        if (window.tidalPlayer) {
+                                            window.tidalPlayer.authenticate({
+                                                userId,
+                                                accessToken,
+                                                refreshToken: refreshToken || undefined
+                                            }).then(success => {
+                                                if (success) {
+                                                    // Remove the auth container
+                                                    tidalUIContainer.remove();
+                                                    // Refresh the page to show the player
+                                                    window.location.reload();
+                                                } else {
+                                                    alert('Failed to authenticate with Tidal. Please check your credentials.');
+                                                }
+                                            }).catch(error => {
+                                                console.error('Error authenticating:', error);
+                                                alert(`Error authenticating: ${error.message}`);
+                                            });
+                                        } else {
+                                            alert('Tidal player is not available. Please try again later.');
+                                        }
+                                    });
+                                }
+                            }
                         });
                         
                         tidalAuthContainer.appendChild(authEggElement);
@@ -210,7 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Create Tidal UI
-                    window.TidalAppEgg.init('tidal-player-container');
+                    if (window.TidalAppEgg && typeof window.TidalAppEgg.init === 'function') {
+                        window.TidalAppEgg.init('tidal-player-container');
+                    } else {
+                        // Fallback if TidalAppEgg isn't available
+                        tidalContainer.innerHTML = `
+                            <div class="tidal-now-playing">
+                                <div class="tidal-now-playing-image" style="background-image: url('https://resources.tidal.com/images/${currentTrack.album.cover}/320x320.jpg')"></div>
+                                <div class="tidal-now-playing-info">
+                                    <div class="tidal-now-playing-title">${currentTrack.title}</div>
+                                    <div class="tidal-now-playing-artist">${currentTrack.artist.name}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
                     
                     // Add completion message
                     addMessage(`I'm now playing "${currentTrack.title}" by ${currentTrack.artist.name} from Tidal. You can control playback using the player above.`, 'assistant');
