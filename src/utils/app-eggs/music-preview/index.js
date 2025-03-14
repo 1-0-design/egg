@@ -4,9 +4,11 @@
 const musicPreviewEgg = {
   id: "music-preview",
   name: "Music Preview",
-  description: "Search and play 30-second music previews",
+  description: "Listen to music previews",
   icon: "music",
   category: "Media",
+  width: 225, // 3:2 aspect ratio
+  height: 150,
   
   // Initialize the app egg
   init(containerId) {

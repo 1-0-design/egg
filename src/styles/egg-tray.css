@@ -1,0 +1,87 @@
+/* src/styles/egg-tray.css */
+
+.egg-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+}
+
+.egg-container {
+  position: relative;
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+
+.egg-container.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.egg-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: none;
+  z-index: 10;
+}
+
+/* Show controls on hover for desktop */
+@media (hover: hover) {
+  .egg-container:hover .egg-controls {
+    display: flex;
+  }
+}
+
+/* Always show controls on mobile */
+@media (hover: none) {
+  .egg-controls {
+    display: flex;
+  }
+}
+
+.egg-add-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #000;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.egg-add-button:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.egg-add-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Drag target indicator */
+.egg-tray::after {
+  content: 'Drop to remove';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.egg-tray.drag-active::after {
+  opacity: 1;
+}
