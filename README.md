@@ -1,118 +1,51 @@
-# Egg - AI Assistant
+# Egg Browser UI
 
-An elegant AI assistant UI inspired by Vision OS, where tasks appear as "eggs" that wobble while processing and show completion status.
+A browser-based UI implementation for the Egg project.
 
-![Egg UI Concept](https://via.placeholder.com/800x450/ffffff/000000?text=Egg+UI+Concept)
+## Local Development
 
-## Features
-
-- **Egg UI**: Requests appear as eggs at the top of screen
-- **Processing Animation**: Eggs wobble during processing
-- **Status Indicators**: Checkmarks appear when tasks complete
-- **App/Website Preview**: Window showing what the AI is interacting with
-- **Logo Integration**: Favicon of the app/website being used
-- **Detailed View**: Tap/click eggs to see full-screen results
-- **Sharing**: Copy links to share results
-- **Control Options**: Pause/delete prompts in progress
-- **Goose Integration**: Powered by Goose by Block with Anthropic API support
-- **Responsive Design**: Works on desktop, iPad, iPhone, Android
-- **Vision OS Aesthetic**: Monochrome design with blur effects
-
-## Technical Stack
-
-- **Frontend**: HTML/CSS/JavaScript for prototype, React for production
-- **Backend**: Node.js with Express
-- **API Integration**: Anthropic Claude API and Goose by Block
-- **Styling**: Custom CSS with Vision OS-inspired design
-- **Hosting**: Deployed via Render
-- **Version Control**: GitHub
-
-## Goose Integration
-
-Egg includes full integration with [Goose by Block](https://github.com/block/goose), a powerful local AI agent designed to automate development tasks. This integration allows Egg to leverage Goose's capabilities including:
-
-- Running complex scripts and automations
-- Controlling the computer to perform tasks
-- Web scraping and information gathering
-- Memory for persistent storage across sessions
-
-### Setting Up Goose
-
-To use Goose with Egg:
-
-1. Install Goose CLI or Desktop app from the [official repository](https://github.com/block/goose)
-2. Configure your LLM provider (Claude, GPT-4, or Google Gemini)
-3. Enable the Computer Controller extension in Goose
-4. Connect Egg to your Goose installation through the Settings panel
-
-See our settings panel for step-by-step instructions.
-
-## Setup & Installation
-
-### Prerequisites
-
-- Node.js (v14 or newer)
-- npm or yarn
-- Anthropic API key (for Claude integration) or Goose by Block installation
-
-### Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/1-0-design/egg.git
-   cd egg
-   ```
-
+1. Clone the repository
 2. Install dependencies:
-   ```bash
+   ```
    npm install
    ```
-
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env
+3. Start the development server:
    ```
-   Then edit the `.env` file and add your Anthropic API key.
-
-4. Start the development server:
-   ```bash
-   npm run dev
+   npm start
    ```
+4. Open your browser and visit: http://localhost:3000
 
-5. Open your browser and navigate to `http://localhost:3000`
+## Deployment on Render
 
-### Deployment to Render
+This project is configured to deploy on Render.com:
 
 1. Create a new Web Service on Render
 2. Connect your GitHub repository
 3. Use the following settings:
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-4. Add the environment variables:
-   - `NODE_ENV`: `production`
-   - `PORT`: `10000`
-   - `ANTHROPIC_API_KEY`: Your Anthropic API key
+   - **Environment**: Node
+   - **Plan**: Free
 
-## Usage Guide
+Alternatively, you can use the Render Dashboard to deploy directly from GitHub:
 
-1. **Enter Prompt**: Type your request in the input area or use voice input
-2. **Request Processing**: Your request appears as an egg at the top of the screen
-3. **View Progress**: Watch as the egg wobbles during processing
-4. **Access Results**: Click on a completed egg (with checkmark) to view full results
-5. **Share Results**: Use the share button to generate a shareable link
+1. Go to the Render Dashboard
+2. Click "New +"
+3. Select "Web Service"
+4. Connect your GitHub repository
+5. Render will automatically detect the configuration and deploy the app
 
-## Project Status
+## Project Structure
 
-Currently in prototype phase. Basic functionality is in place, with ongoing work to:
-- Improve the user interface
-- Enhance API integration with Claude and Goose
-- Add voice input functionality
-- Optimize for mobile devices
+- `server.js`: Express server to serve the application
+- `browser.html`: Main HTML file that loads the UI
+- `src/styles/egg/`: CSS files for the UI components
+- `src/components/`: React component files
+- `src/icons/`: Icon components
 
-## Contribution
+## Features
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-MIT
+- Expandable bottom sheet UI
+- Weather and music egg components
+- Message thread with different message types
+- Drag and click interactions for the bottom sheet

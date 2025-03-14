@@ -1,0 +1,24 @@
+/* Import all CSS files for components */
+@import 'fonts.css';
+@import 'egg/browser-window.css';
+@import 'egg/eggs-music.css';
+@import 'egg/eggs-weather-sunny.css';
+@import 'egg/icons.css';
+
+/* Additional styles for browser window */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Cash Sans-Medium', Helvetica, Arial, sans-serif;
+}
+
+/* Add a transition to all elements for smoother animations */
+* {
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}

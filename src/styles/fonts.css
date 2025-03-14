@@ -1,0 +1,22 @@
+/* Font Face Declarations for Cash Sans */
+
+@font-face {
+  font-family: 'Cash Sans-Medium';
+  src: url('../fonts/CashSans-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cash Sans-Bold';
+  src: url('../fonts/CashSans-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cash Sans-Semibold';
+  src: url('../fonts/CashSans-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
