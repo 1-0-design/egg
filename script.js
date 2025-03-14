@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Create Tidal UI for authentication
-                    const tidalUI = new window.TidalAppEgg.init('tidal-auth-container');
+                    window.TidalAppEgg.init('tidal-auth-container');
                     
                     completeEgg(eggElement, 'Tidal Music');
                     addMessage('To play music, you need to authenticate with Tidal first. Please enter your Tidal credentials in the form above.', 'assistant');
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Create Tidal UI
-                    const tidalUI = new window.TidalAppEgg.init('tidal-player-container');
+                    window.TidalAppEgg.init('tidal-player-container');
                     
                     // Add completion message
                     addMessage(`I'm now playing "${currentTrack.title}" by ${currentTrack.artist.name} from Tidal. You can control playback using the player above.`, 'assistant');
