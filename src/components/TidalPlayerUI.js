@@ -354,4 +354,3 @@ class TidalPlayerUI {
 
 // Export the TidalPlayerUI class
 export default TidalPlayerUI;
-EOL 2>&1

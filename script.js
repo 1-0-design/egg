@@ -1,19 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Load app eggs modules
     Promise.all([
-        import('./src/utils/app-eggs.js'),
-        import('./src/utils/app-eggs/tidal/index.js'),
-        import('./src/components/TidalPlayer.js')
+        import('./src/utils/app-eggs.js').catch(err => {
+            console.warn('Failed to load app-eggs.js:', err);
+            return { WeatherEgg: null, MusicEgg: null };
+        }),
+        import('./src/utils/app-eggs/tidal/index.js').catch(err => {
+            console.warn('Failed to load tidal index:', err);
+            return { default: null };
+        }),
+        import('./src/components/TidalPlayer.js').catch(err => {
+            console.warn('Failed to load TidalPlayer:', err);
+            return { default: null };
+        })
     ])
         .then(([appEggsModule, tidalAppEggModule, TidalPlayerModule]) => {
-            window.WeatherEgg = appEggsModule.WeatherEgg;
-            window.MusicEgg = appEggsModule.MusicEgg;
-            window.TidalAppEgg = tidalAppEggModule.default;
-            window.TidalPlayer = TidalPlayerModule.default;
+            if (appEggsModule) {
+                window.WeatherEgg = appEggsModule.WeatherEgg;
+                window.MusicEgg = appEggsModule.MusicEgg;
+            }
             
-            // Initialize Tidal player
-            window.tidalPlayer = new window.TidalPlayer();
-            console.log('Tidal player initialized');
+            if (tidalAppEggModule && tidalAppEggModule.default) {
+                window.TidalAppEgg = tidalAppEggModule.default;
+            }
+            
+            if (TidalPlayerModule && TidalPlayerModule.default) {
+                window.TidalPlayer = TidalPlayerModule.default;
+                
+                try {
+                    // Initialize Tidal player
+                    window.tidalPlayer = new window.TidalPlayer();
+                    console.log('Tidal player initialized');
+                } catch (err) {
+                    console.error('Error initializing Tidal player:', err);
+                    window.tidalPlayer = null;
+                }
+            }
         })
         .catch(error => console.error('Error loading app eggs:', error));
 
