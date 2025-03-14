@@ -7,10 +7,11 @@ const musicPreviewEgg = {
   description: "Listen to music previews",
   icon: "music",
   category: "Media",
-  width: 225, // 3:2 aspect ratio
+  width: 200, // 4:3 aspect ratio
   height: 150,
   hideAddedState: true, // Don't show checkmark when added
   hideFromLibrary: true, // Hide from library after spawning player
+  hideResponseState: true, // Don't show completed state in chat
   
   // Initialize the app egg
   init(containerId) {

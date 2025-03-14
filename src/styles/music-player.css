@@ -2,7 +2,7 @@
 
 .music-player {
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  width: 225px; /* 3:2 aspect ratio with 150pt height */
+  width: 200px; /* 4:3 aspect ratio with 150pt height */
   height: 150px;
   margin: 0 auto;
   padding: 12px;
@@ -38,8 +38,8 @@
 }
 
 .album-artwork {
-  width: 80px; /* Smaller artwork to fit in egg */
-  height: 80px;
+  width: 70px; /* Adjusted for 4:3 ratio */
+  height: 70px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   object-fit: cover;
