@@ -139,19 +139,25 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Initialize music player with the container ID
             if (window.MusicPreviewEgg && typeof window.MusicPreviewEgg.init === 'function') {
-                const musicPlayer = window.MusicPreviewEgg.init('music-player-container');
-                
-                // If we have a player, search for tracks and play the first one
-                if (musicPlayer && typeof musicPlayer.search === 'function') {
-                    await musicPlayer.search(searchQuery);
+                try {
+                    const musicPlayer = await window.MusicPreviewEgg.init('music-player-container');
                     
-                    // Complete the egg
-                    completeEgg(eggElement, 'Music Preview');
-                    
-                    // Add completion message
-                    addMessage(`I've found some music for "${searchQuery}". Click on a track to play a 30-second preview.`, 'assistant');
-                } else {
-                    throw new Error('Music player not properly initialized');
+                    // If we have a player, search for tracks and play the first one
+                    if (musicPlayer && typeof musicPlayer.search === 'function') {
+                        await musicPlayer.search(searchQuery);
+                        
+                        // Complete the egg
+                        completeEgg(eggElement, 'Music Preview');
+                        
+                        // Add completion message
+                        addMessage(`I've found some music for "${searchQuery}". Click on a track to play a 30-second preview.`, 'assistant');
+                    } else {
+                        console.error('Music player not properly initialized or missing search method');
+                        throw new Error('Music player not properly initialized');
+                    }
+                } catch (error) {
+                    console.error('Music player initialization error:', error);
+                    throw error;
                 }
             } else if (window.MusicEgg && typeof window.MusicEgg.searchTracks === 'function') {
                 // Fallback to the original music egg if the new one isn't available

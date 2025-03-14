@@ -17,7 +17,7 @@ class MusicPlayer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
-      console.error();
+      console.error('Music player container not found:', containerId);
       return;
     }
     

@@ -15,7 +15,15 @@ const musicPreviewEgg = {
       .then(module => {
         const MusicPlayer = module.default;
         // Create a new music player
-        return new MusicPlayer(containerId);
+        const player = new MusicPlayer(containerId);
+        
+        // Check if the player was properly initialized
+        if (!player.container) {
+          console.error("Music player initialization failed - container not found");
+          return null;
+        }
+        
+        return player;
       })
       .catch(err => {
         console.error("Error loading Music Player:", err);
