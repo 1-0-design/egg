@@ -3,6 +3,9 @@
 
 import { searchMusicPreviews, getTrackById, getTrendingMusic } from '../utils/musicPreviewApi.js';
 
+// Custom event for search results
+const SEARCH_RESULTS_EVENT = 'musicSearchResults';
+
 // Load styles
 try {
   const link = document.createElement('link');
@@ -137,10 +140,26 @@ class MusicPlayer {
     try {
       const results = await searchMusicPreviews(query);
       
-      // If we got results, add them to the queue and play first track
       if (results && results.length > 0) {
+        // Take top 3 results
+        const topResults = results.slice(0, 3);
+        
+        // Save full results to queue
         this.queue = results;
         this.queueIndex = 0;
+        
+        // Emit search results event for chat integration
+        const searchResultsEvent = new CustomEvent(SEARCH_RESULTS_EVENT, {
+          detail: topResults.map(track => ({
+            id: track.id,
+            title: track.title,
+            artist: track.artist,
+            albumArt: track.albumArt
+          }))
+        });
+        document.dispatchEvent(searchResultsEvent);
+        
+        // Auto-play first result
         await this.playTrack(results[0].id);
       }
     } catch (error) {
@@ -158,16 +177,16 @@ class MusicPlayer {
         if (!track) {
           throw new Error('Track not found');
         }
+        // Add to queue if it wasn't there
+        this.queue.push(track);
+        this.queueIndex = this.queue.length - 1;
+      } else {
+        // Update queue index
+        this.queueIndex = this.queue.findIndex(t => t.id === trackId);
       }
       
       // Save current track
       this.currentTrack = track;
-      
-      // Update current track in queue
-      const trackIndex = this.queue.findIndex(t => t.id === trackId);
-      if (trackIndex !== -1) {
-        this.queueIndex = trackIndex;
-      }
       
       // Set up audio source
       this.audioElement.src = track.previewUrl;
@@ -264,6 +283,14 @@ class MusicPlayer {
   
   isCurrentlyPlaying() {
     return this.isPlaying;
+  }
+
+  // Cleanup method to remove event listeners
+  destroy() {
+    this.audioElement.pause();
+    this.audioElement.src = '';
+    this.audioElement.removeEventListener('timeupdate', this.updateProgress);
+    this.audioElement.removeEventListener('ended', this.playNext);
   }
 }
 
