@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             // Add response to chat
-            addMessage(`I'll check the weather${location ? ' for ' + location : ''} for you.`, 'assistant');
+            addMessage(`I'll check the weather${location ? ' for ' + location : ' for your location'}.`, 'assistant');
             
             // Fetch weather data
             const weatherData = await window.WeatherEgg.fetchWeatherData(location);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             eggsContainer.replaceChild(weatherEgg, eggElement);
             
             // Add completion message
-            addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°.`, 'assistant');
+            addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°F.`, 'assistant');
         } catch (error) {
             console.error('Weather error:', error);
             completeEgg(eggElement, 'Weather');
@@ -183,7 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simulate processing completion after some time
         setTimeout(() => {
             completeEgg(eggDiv, summary);
-        }, 5000); // 5 seconds for demo
+            
+            // Add completion message to chat
+            addMessage('I\'ve completed your request! Click the egg to view the full results.', 'assistant');
+        }, 3000); // 3 seconds for demo
     }
     
     // Function to mark egg as completed
@@ -204,9 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        
-        // Add completion message to chat
-        addMessage('I\'ve completed your request! Click the egg to view the full results.', 'assistant');
     }
     
     // Function to show the full-screen result
@@ -220,12 +220,38 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.result-title').textContent = prompt.length > 30 ? 
             prompt.substring(0, 30) + '...' : prompt;
         
-        // Add some example content
-        document.querySelector('.result-content').innerHTML = `
+        // Add dynamic content based on the prompt
+        let resultContent = `
             <h2>Results for: ${prompt}</h2>
-            <p>Here's the detailed information you requested. This is a placeholder that would show the complete results from the AI assistant.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquet nisl, nec aliquam nisl nisl nec.</p>
+            <p>Here's the information you requested:</p>
         `;
+        
+        // Add some dynamic content based on the prompt type
+        if (prompt.toLowerCase().includes('weather')) {
+            resultContent += `
+                <div class="result-card">
+                    <h3>Weather Report</h3>
+                    <p>This is a detailed weather report with forecasts and additional climate data.</p>
+                </div>
+            `;
+        } else if (prompt.toLowerCase().includes('music') || prompt.toLowerCase().includes('play')) {
+            resultContent += `
+                <div class="result-card">
+                    <h3>Music Information</h3>
+                    <p>Track details, artist information, and recommendations based on your music preferences.</p>
+                </div>
+            `;
+        } else {
+            resultContent += `
+                <div class="result-card">
+                    <h3>AI Assistant Response</h3>
+                    <p>I've processed your request for "${prompt}" and compiled the relevant information.</p>
+                    <p>Click the share button to generate a shareable link to this result.</p>
+                </div>
+            `;
+        }
+        
+        document.querySelector('.result-content').innerHTML = resultContent;
         
         // Show the result view
         resultView.style.display = 'flex';

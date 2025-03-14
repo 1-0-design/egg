@@ -100,21 +100,52 @@ const WeatherEgg = {
     },
     
     /**
-     * Fetch weather data from a weather API
-     * @param {string} location - The location to get weather for
-     * @returns {Promise<Object>} - Weather data object
-     */
-    fetchWeatherData: async function(location) {
-        // In a real implementation, this would call a weather API
-        // For demo purposes, we'll return mock data
+ * Fetch weather data from a weather API
+ * @param {string} location - The location to get weather for (optional)
+ * @returns {Promise<Object>} - Weather data object
+ */
+fetchWeatherData: async function(location) {
+    try {
+        // First, if no location was provided, get user's location from IP
+        if (!location) {
+            const response = await fetch('https://ipapi.co/json/');
+            const ipData = await response.json();
+            
+            if (ipData && ipData.city) {
+                location = `${ipData.city}, ${ipData.region_code || ipData.country_code}`;
+                console.log(`Detected location: ${location}`);
+            } else {
+                // Fallback if location detection fails
+                location = 'Current Location';
+                console.warn('Could not detect location, using default');
+            }
+        }
+        
+        // For demo purposes, we'll simulate weather data
+        // In a real implementation, this would call a weather API like OpenWeatherMap
+        const mockConditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy', 'Thunderstorm', 'Snow', 'Clear'];
+        const randomCondition = mockConditions[Math.floor(Math.random() * mockConditions.length)];
+        const randomTemp = Math.floor(Math.random() * 35) + 40; // 40-75°F
         
         // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Mock data
+        // Return mock data with the detected or provided location
         return {
-            location: location || 'San Francisco, CA',
-            temp: 72,
+            location: location,
+            temp: randomTemp,
+            condition: randomCondition,
+            wind: Math.floor(Math.random() * 15) + 2, // 2-17 mph
+            humidity: Math.floor(Math.random() * 40) + 30, // 30-70%
+            sunrise: '6:45 AM',
+            sunset: '7:30 PM'
+        };
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        // Return default data if there's an error
+        return {
+            location: location || 'Unknown Location',
+            temp: 70,
             condition: 'Partly Cloudy',
             wind: 8,
             humidity: 65,
@@ -122,6 +153,7 @@ const WeatherEgg = {
             sunset: '7:30 PM'
         };
     }
+}
 };
 
 // Music Player Egg
