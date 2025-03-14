@@ -1,7 +1,7 @@
 // src/components/MusicPlayer.js
 // A component for playing music previews from iTunes
 
-import { searchMusicPreviews, getTrackById } from '../utils/musicPreviewApi.js';
+import { searchMusicPreviews, getTrackById, getTrendingMusic } from '../utils/musicPreviewApi.js';
 
 // Load styles
 try {
@@ -37,6 +37,8 @@ class MusicPlayer {
     
     // Load initial music
     this.loadInitialMusic();
+    this.render();
+    this.attachEventListeners();
   }
   
   async loadInitialMusic() {
