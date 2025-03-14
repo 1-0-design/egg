@@ -131,16 +131,14 @@ class MusicPlayer {
     if (!query) return;
     
     try {
-      this.searchResults = await searchMusicPreviews(query);
+      const results = await searchMusicPreviews(query);
       
-      // If we got results, add them to the queue
-      if (this.searchResults.length > 0) {
-        this.queue = [...this.searchResults];
+      // If we got results, add them to the queue and play first track
+      if (results && results.length > 0) {
+        this.queue = results;
         this.queueIndex = 0;
+        await this.playTrack(results[0].id);
       }
-      
-      this.render();
-      this.attachEventListeners();
     } catch (error) {
       console.error('Search error:', error);
     }
@@ -148,8 +146,8 @@ class MusicPlayer {
   
   async playTrack(trackId) {
     try {
-      // Find track in search results or fetch it if not found
-      let track = this.searchResults.find(t => t.id == trackId);
+      // Find track in queue or fetch it if not found
+      let track = this.queue.find(t => t.id === trackId);
       
       if (!track) {
         track = await getTrackById(trackId);
@@ -162,7 +160,7 @@ class MusicPlayer {
       this.currentTrack = track;
       
       // Update current track in queue
-      const trackIndex = this.queue.findIndex(t => t.id == trackId);
+      const trackIndex = this.queue.findIndex(t => t.id === trackId);
       if (trackIndex !== -1) {
         this.queueIndex = trackIndex;
       }
@@ -172,28 +170,23 @@ class MusicPlayer {
       this.audioElement.volume = 0.7; // Default volume
       
       // Play the track
-      this.audioElement.play()
-        .then(() => {
-          this.isPlaying = true;
-          this.render();
-          this.attachEventListeners();
-        })
-        .catch(error => {
-          console.error('Error playing track:', error);
-          this.isPlaying = false;
-          this.render();
-          this.attachEventListeners();
-        });
+      await this.audioElement.play();
+      this.isPlaying = true;
+      this.render();
+      this.attachEventListeners();
     } catch (error) {
       console.error('Error playing track:', error);
+      this.isPlaying = false;
+      this.render();
+      this.attachEventListeners();
     }
   }
   
   togglePlay() {
     if (!this.currentTrack) {
-      // If no track is loaded but we have search results, play the first one
-      if (this.searchResults.length > 0) {
-        this.playTrack(this.searchResults[0].id);
+      // If no track is loaded but we have queue, play the first one
+      if (this.queue.length > 0) {
+        this.playTrack(this.queue[0].id);
       }
       return;
     }
