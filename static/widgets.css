@@ -1,0 +1,112 @@
+/* Additional styles for nested elements */
+.eggs-weather-sunny .frame,
+.eggs-music .frame {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.eggs-weather-sunny .frame-2,
+.eggs-music .frame-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eggs-weather-sunny .text-wrapper,
+.eggs-music .text-wrapper {
+  font-family: "Cash Sans-Medium", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.eggs-weather-sunny .text-wrapper-2,
+.eggs-music .text-wrapper-2 {
+  font-family: "Cash Sans-Medium", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+}
+
+.eggs-weather-sunny .more-button,
+.eggs-music .more-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eggs-weather-sunny .more-icon,
+.eggs-music .more-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.eggs-weather-sunny .frame-3,
+.eggs-music .frame-3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eggs-weather-sunny .text-wrapper-3 {
+  font-size: 48px;
+  font-weight: 600;
+  color: #000;
+  font-family: "Cash Sans-Semibold", Helvetica, Arial, sans-serif;
+}
+
+.eggs-weather-sunny .icons-sun-instance {
+  width: 48px;
+  height: 48px;
+}
+
+.eggs-music .frame-3 {
+  gap: 15px;
+}
+
+.eggs-music .album-artwork {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.eggs-music .timeline {
+  flex: 1;
+  height: 6px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  position: relative;
+}
+
+.eggs-music .rectangle-5 {
+  position: absolute;
+  height: 100%;
+  width: 20%;
+  background-color: #000;
+  border-radius: 3px;
+}
+
+.eggs-music .pause-button {
+  width: 48px;
+  height: 48px;
+  background-color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.eggs-music .play-icon {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 14px;
+  border-color: transparent transparent transparent #fff;
+  margin-left: 2px;
+}
