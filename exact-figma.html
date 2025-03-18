@@ -55,6 +55,61 @@
           padding-bottom: var(--egg-tray-height);
         }
 
+        /* Transitions and animations */
+        .morph-animation {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .song-suggestion {
+          transform-origin: center;
+          transition: all 0.3s ease-out;
+        }
+
+        .song-suggestion.fade-out {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+
+        .morph-to-egg {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .egg-morphing {
+          opacity: 0;
+          transform: scale(0.95);
+          transition: all 0.3s ease-out;
+        }
+
+        /* Transitions and animations */
+        .transition-opacity {
+          transition: opacity 0.3s ease-out;
+        }
+
+        .transition-transform {
+          transition: transform 0.3s ease-out;
+        }
+
+        .transition-all {
+          transition: all 0.3s ease-out;
+        }
+
+        .fade-out {
+          opacity: 0;
+        }
+
+        .morph-to-egg {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s ease-out;
+        }
+
+        .suggestion-to-egg {
+          transform-origin: top left;
+          transition: all 0.3s ease-out;
+        }
+
         /* Chat container */
         :root {
           --egg-tray-height: 200px;
@@ -109,6 +164,33 @@
 
         .frame-wrapper.right {
           justify-content: flex-end;
+        }
+
+        /* Transitions and animations */
+        .morph-animation {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .suggestion-morphing {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .suggestion-fade {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+
+        .egg-morphing {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .egg-fade {
+          opacity: 0;
+          transform: scale(0.95);
         }
 
         /* Message bubbles */
@@ -506,9 +588,11 @@
           border-radius: 30px;
           box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
           height: 200px;
-          overflow: hidden;
           width: 320px;
           position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
         }
 
         .eggs-music::before {
@@ -784,7 +868,8 @@
         messages: [],
         eggs: [],
         isProcessing: false,
-        currentMusic: null
+        currentMusic: null,
+        activeMusicEgg: null
       };
 
       // Music API functions
@@ -1042,27 +1127,46 @@
       }
 
       function addMusicWithSuggestions(data) {
-        // First add the music egg
+        // Add initial egg to tray with fade in
+        const eggElement = createMusicEgg({
+          id: data.result.id,
+          title: data.result.title,
+          artist: data.result.artist,
+          albumArt: data.result.albumArt,
+          previewUrl: data.result.previewUrl
+        });
+        eggElement.style.opacity = '0';
+        
+        // Update state
+        if (state.activeMusicEgg) {
+          state.activeMusicEgg.classList.add('egg-fade');
+          setTimeout(() => state.activeMusicEgg.remove(), 300);
+        }
+        
+        const eggTray = document.querySelector('.egg-collection');
+        eggTray.innerHTML = '';
+        eggTray.appendChild(eggElement);
+        
+        // Trigger reflow
+        eggElement.offsetHeight;
+        
+        // Fade in new egg
+        eggElement.style.opacity = '1';
+        state.activeMusicEgg = eggElement;
+
+        // Add suggestions to chat
         const chatContainer = document.querySelector('.chat');
-        const eggElement = createMusicEgg(data.result);
-        chatContainer.appendChild(eggElement);
-
-        // Then add suggestions from search results
-        const suggestions = data.suggestions.map(result => ({
-          id: result.id,
-          title: `${result.artist} – ${result.title}`,
-          image: result.albumArt,
-          previewUrl: result.previewUrl
-        }));
-
-        suggestions.forEach(suggestion => {
-          const suggestionElement = createMessageSuggestion(suggestion);
+        
+        data.suggestions.forEach(result => {
+          const suggestionElement = createMessageSuggestion({
+            id: result.id,
+            title: result.title,
+            artist: result.artist,
+            image: result.albumArt,
+            previewUrl: result.previewUrl
+          });
           chatContainer.appendChild(suggestionElement);
         });
-
-        // Update the egg tray
-        state.eggs.push({ type: 'music', data: data.result });
-        updateEggTray();
 
         // Scroll to latest
         scrollToLatest();
@@ -1198,19 +1302,98 @@
         const wrapper = document.createElement('div');
         wrapper.className = 'frame-wrapper';
         
+        const suggestionData = {
+          id: suggestion.id,
+          title: suggestion.title,
+          artist: suggestion.artist,
+          albumArt: suggestion.image,
+          previewUrl: suggestion.previewUrl
+        };
+        
         wrapper.innerHTML = `
-          <div class="message-bubble assistant song-suggestion">
+          <div class="message-bubble assistant song-suggestion transition-all" data-preview-url="${suggestion.previewUrl}">
             <div class="suggestion-info">
-              <div class="suggestion-title">${suggestion.title.split(' – ')[0].toUpperCase()}</div>
-              <div class="suggestion-artist">${suggestion.title.split(' – ')[1].toUpperCase()}</div>
+              <div class="suggestion-title">${suggestion.artist.toUpperCase()}</div>
+              <div class="suggestion-artist">${suggestion.title.toUpperCase()}</div>
             </div>
-            <div class="play" onclick="toggleMusic('${suggestion.previewUrl}')">
+            <div class="play" onclick="handleSuggestionClick(event, ${JSON.stringify(suggestionData).replace(/"/g, '&quot;')})">
               <img src="assets/icons/play-white.svg" alt="Play">
             </div>
           </div>
         `;
         
         return wrapper;
+      }
+
+      async function morphSuggestionToEgg(suggestionEl, suggestionData) {
+        // Get dimensions and position
+        const suggestionRect = suggestionEl.getBoundingClientRect();
+        
+        // Create temp egg with suggestion dimensions
+        const eggElement = createMusicEgg(suggestionData);
+        eggElement.style.position = 'fixed';
+        eggElement.style.top = `${suggestionRect.top}px`;
+        eggElement.style.left = `${suggestionRect.left}px`;
+        eggElement.style.width = `${suggestionRect.width}px`;
+        eggElement.style.height = `${suggestionRect.height}px`;
+        eggElement.style.opacity = '0';
+        eggElement.classList.add('egg-morphing');
+        
+        // Add to document
+        document.body.appendChild(eggElement);
+        
+        // Fade out suggestion
+        suggestionEl.classList.add('suggestion-fade');
+        
+        // Get egg tray for final position
+        const eggTray = document.querySelector('.egg-collection');
+        const trayRect = eggTray.getBoundingClientRect();
+        
+        // Wait a frame
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
+        // Start morphing animation
+        eggElement.style.opacity = '1';
+        eggElement.style.width = '320px';
+        eggElement.style.height = '200px';
+        eggElement.style.transform = `
+          translate(${trayRect.left - suggestionRect.left}px,
+                   ${trayRect.top - suggestionRect.top}px)
+        `;
+        
+        // Let the animation finish
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Clean up suggestion
+        suggestionEl.remove();
+        
+        // Handle existing egg
+        if (state.activeMusicEgg) {
+          state.activeMusicEgg.classList.add('egg-fade');
+          await new Promise(resolve => setTimeout(resolve, 300));
+          state.activeMusicEgg.remove();
+        }
+        
+        // Move egg to final position
+        eggElement.style.position = '';
+        eggElement.style.top = '';
+        eggElement.style.left = '';
+        eggElement.style.transform = '';
+        eggElement.classList.remove('egg-morphing');
+        
+        // Update tray
+        eggTray.innerHTML = '';
+        eggTray.appendChild(eggElement);
+        
+        // Update state and start playing
+        state.activeMusicEgg = eggElement;
+        toggleMusic(suggestionData.previewUrl);
+      }
+
+      async function handleSuggestionClick(event, suggestionData) {
+        event.preventDefault();
+        const suggestionEl = event.currentTarget.closest('.song-suggestion');
+        await morphSuggestionToEgg(suggestionEl, suggestionData);
       }
 
       function addSuggestions(suggestions) {
