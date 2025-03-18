@@ -28,12 +28,18 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Cash Sans-Medium", Helvetica;
+            font-size: 18px;
+            line-height: normal;
+            letter-spacing: 0;
             background-color: #f5f5f7;
             overflow: hidden;
             display: flex;
             justify-content: center;
         }
+
+        /* Remove all font declarations from individual components as they should inherit from body */
+        
         
         /* Content styles */
         .content {
@@ -46,6 +52,7 @@
           width: 100%;
           max-width: 2500px;
           margin: 0 auto;
+          padding-bottom: var(--egg-tray-height);
         }
 
         /* Chat container */
@@ -62,10 +69,16 @@
           flex-grow: 1;
           gap: 15px;
           overflow-y: scroll;
-          padding: 30px 30px calc(30px + var(--egg-tray-height));
-          scroll-padding-bottom: var(--egg-tray-height);
+          padding: 30px;
           position: relative;
           width: 100%;
+        }
+
+        .content .chat::after {
+          content: '';
+          display: block;
+          height: var(--egg-tray-height);
+          flex-shrink: 0;
         }
 
         .content .chat::-webkit-scrollbar {
@@ -89,7 +102,6 @@
         /* Message containers */
         .frame-wrapper {
           align-self: stretch;
-          height: 60px;
           position: relative;
           width: 100%;
           display: flex;
@@ -106,28 +118,60 @@
           box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.25), 0px 5px 15px rgba(0, 0, 0, 0.15);
           display: inline-flex;
           gap: 10px;
-          height: 60px;
-          padding: 23px 30px;
+          padding: 18px 30px;
           position: relative;
         }
 
-        /* Song suggestion bubbles (special styling) */
-        .message-bubble.song-suggestion {
-          padding: 23px 18px 23px 6px;
+        .message-bubble .text {
+          color: inherit;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          white-space: nowrap;
         }
 
-        .message-bubble.song-suggestion .suggestion-image {
+        /* Song suggestion bubbles (special styling) */
+        .message-bubble.assistant.song-suggestion {
+          padding: 30px;
+          display: flex;
+          align-items: center;
+          gap: 30px;
+          height: auto;
+          width: 320px;
+          border-radius: 30px !important;
+          background-color: #000000;
+        }
+
+        .message-bubble.song-suggestion .suggestion-text {
+          color: inherit;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          white-space: nowrap;
+        }
+
+        .message-bubble.song-suggestion .play {
           height: 48px;
           width: 48px;
-          margin: -17px 0;
-          object-fit: cover;
-          border-radius: 24px; /* Make it circular */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: auto;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 24px;
+          flex-shrink: 0;
+          padding: 12px;
         }
 
-        .message-bubble.song-suggestion .icons-play {
+        .message-bubble.song-suggestion .play img {
           height: 24px;
           width: 24px;
-          cursor: pointer;
+          display: block;
         }
 
         .message-bubble.assistant {
@@ -433,7 +477,8 @@
           display: flex;
           width: 100%;
           justify-content: flex-start;
-          margin: 15px 0;
+          /* Remove margin since parent chat has gap: 15px */
+          margin: 0;
         }
 
         /* Egg tray collection */
@@ -517,9 +562,7 @@
 
         .eggs-music .info {
           align-items: flex-start;
-          align-self: stretch;
           display: inline-flex;
-          flex: 0 0 auto;
           flex-direction: column;
           justify-content: space-between;
           position: relative;
@@ -528,7 +571,7 @@
         .eggs-music .song-title {
           align-self: stretch;
           color: #000000;
-          font-family: "Cash Sans-Semibold", Helvetica;
+          font-family: "Cash Sans-Medium", Helvetica;
           font-size: 18px;
           font-weight: 700;
           letter-spacing: 0;
@@ -611,17 +654,20 @@
           position: relative;
         }
 
+        .eggs-music .play img {
+          height: 24px;
+          width: 24px;
+        }
+
         .song-suggestion {
           align-items: center;
           background-color: #000000;
           border-radius: 100px;
-          display: flex;
+          display: inline-flex;
           gap: 10px;
           height: 60px;
-          justify-content: center;
-          padding: 23px 18px 23px 6px;
+          padding: 6px 6px 6px 30px;
           position: relative;
-          width: 341px;
         }
 
         .song-suggestion .suggestion-image {
@@ -635,14 +681,12 @@
 
         .song-suggestion .suggestion-text {
           color: #ffffff;
-          flex: 1;
           font-family: "Cash Sans-Medium", Helvetica;
           font-size: 18px;
           font-weight: 500;
           letter-spacing: 0;
           line-height: normal;
-          margin-top: -0.50px;
-          position: relative;
+          white-space: nowrap;
         }
 
         .song-suggestion .icons-play {
@@ -654,12 +698,39 @@
           height: 24px;
         }
 
+        .song-suggestion .play {
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          background-color: rgba(255, 255, 255, 0.15);
+          border-radius: 24px;
+          height: 48px;
+          width: 48px;
+          flex-shrink: 0;
+          padding: 12px;
+        }
+
+        .song-suggestion .play img {
+          height: 24px;
+          width: 24px;
+          display: block;
+        }
+
         .suggestions-wrapper {
           display: flex;
           flex-direction: column;
           gap: 15px;
           width: 100%;
-          padding: 15px 0;
+          padding: 15px 0 0 0;
+        }
+
+        /* Custom styles for suggestions inside egg-response */
+        .egg-response .suggestions-wrapper {
+          margin: 0;
+        }
+
+        .egg-response .suggestions-wrapper .frame-wrapper {
+          margin: 0;
         }
     </style>
 </head>
@@ -759,19 +830,151 @@
         }
       }
 
-      // Weather functions - we'll expand this with real API
-      async function getWeather(location = "Kilauea, HI") {
-        // Placeholder weather data - we'll replace with actual API
-        return {
-          location: "KILAUEA, HI",
-          condition: "PARTLY CLOUDY",
-          temperature: "30°F",
-          icon: "sun" // we'll map this to our icons
-        };
+      // Weather functions using real APIs
+      // Use a CORS proxy for API requests
+      const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+      
+      // Weather API configuration
+      const config = {
+        openweatherKey: '13d0248755953db176e513edacfe3629',
+        defaultLocation: {
+          city: "Kilauea",
+          region: "Hawaii",
+          country: "US",
+          latitude: 22.2121,
+          longitude: -159.4134
+        }
+      };
+
+      // Get weather data using an alternative API that doesn't require a proxy
+      async function getWeatherAlternative(lat, lon) {
+        try {
+          const url = `https://api.weatherapi.com/v1/current.json?key=9b249a2457674492896160441241703&q=${lat},${lon}&aqi=no`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (!response.ok) throw new Error('Weather API failed');
+          
+          return {
+            condition: data.current.condition.text.toUpperCase(),
+            temperature: `${Math.round(data.current.temp_f)}°F`,
+            icon: getWeatherIcon(data.current.condition.text)
+          };
+        } catch (error) {
+          console.error('Alternative weather API failed:', error);
+          return null;
+        }
       }
 
+      // Map weather conditions to our icon set
+      function getWeatherIcon(condition) {
+        condition = condition.toLowerCase();
+        if (condition.includes('sun') || condition.includes('clear')) return 'sun';
+        if (condition.includes('rain') || condition.includes('drizzle')) return 'rain';
+        if (condition.includes('snow') || condition.includes('sleet') || condition.includes('ice')) return 'snow';
+        if (condition.includes('storm') || condition.includes('thunder')) return 'storm';
+        if (condition.includes('cloud') || condition.includes('overcast') || condition.includes('fog') || condition.includes('mist')) return 'cloud';
+        return 'sun';
+      }
+      
+      async function getLocationFromIP() {
+        try {
+          // Try ipapi.co first
+          const response = await fetch('https://ipapi.co/json/', {
+            headers: {
+              'Accept': 'application/json',
+              'User-Agent': 'Mozilla/5.0'
+            }
+          });
+          
+          if (!response.ok) throw new Error('ipapi.co failed');
+          
+          const data = await response.json();
+          return {
+            city: data.city,
+            region: data.region,
+            country: data.country,
+            latitude: data.latitude,
+            longitude: data.longitude
+          };
+        } catch (firstError) {
+          console.error('First location attempt failed:', firstError);
+          
+          try {
+            // Try ip-api as fallback
+            const fallbackResponse = await fetch('http://ip-api.com/json/');
+            if (!fallbackResponse.ok) throw new Error('ip-api failed');
+            
+            const fallbackData = await fallbackResponse.json();
+            return {
+              city: fallbackData.city,
+              region: fallbackData.regionName,
+              country: fallbackData.country,
+              latitude: fallbackData.lat,
+              longitude: fallbackData.lon
+            };
+          } catch (secondError) {
+            console.error('Fallback location attempt failed:', secondError);
+            return config.defaultLocation;
+          }
+        }
+      }
+
+      async function getWeather(specificLocation = null) {
+        try {
+          // Get location either from parameter or IP
+          let location = specificLocation || await getLocationFromIP();
+          
+          // Try WeatherAPI.com first (doesn't require proxy)
+          const weatherData = await getWeatherAlternative(location.latitude, location.longitude);
+          
+          if (weatherData) {
+            return {
+              location: `${location.city}, ${location.region}`.toUpperCase(),
+              ...weatherData
+            };
+          }
+          
+          // Fallback to OpenWeatherMap if WeatherAPI fails
+          const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${config.openweatherKey}&units=imperial`;
+          const response = await fetch(weatherUrl);
+          
+          if (!response.ok) {
+            throw new Error('Both weather APIs failed');
+          }
+          
+          const data = await response.json();
+          
+          return {
+            location: `${location.city}, ${location.region}`.toUpperCase(),
+            condition: data.weather[0].main.toUpperCase(),
+            temperature: `${Math.round(data.main.temp)}°F`,
+            icon: getWeatherIcon(data.weather[0].main)
+          };
+        } catch (error) {
+          console.error('Error getting weather:', error);
+          return {
+            location: `${config.defaultLocation.city}, ${config.defaultLocation.region}`.toUpperCase(),
+            condition: "SUNNY",
+            temperature: "75°F",
+            icon: "sun"
+          };
+        }
+      }
       // Egg creation functions
       function createWeatherEgg(weatherData, isInTray = false) {
+        const getWeatherIcon = (iconName) => {
+          // Map our weather types to icon filenames
+          const iconMap = {
+            'sun': 'sun.svg',
+            'cloud': 'cloud.svg',
+            'rain': 'rain.svg',
+            'snow': 'snow.svg',
+            'storm': 'storm.svg'
+          };
+          return `assets/icons/${iconMap[iconName] || 'sun.svg'}`;
+        };
+
         const template = `
           <div class="weather-egg">
             <div class="frame">
@@ -785,7 +988,7 @@
             </div>
             <div class="frame-2">
               <div class="temperature">${weatherData.temperature}</div>
-              <img class="icons-sun" src="assets/icons/sun.svg" alt="Sun">
+              <img class="icons-sun" src="${getWeatherIcon(weatherData.icon)}" alt="Weather icon">
             </div>
           </div>
         `;
@@ -797,8 +1000,9 @@
       }
 
       function createMusicEgg(musicData, isInTray = false) {
+        const eggId = `music-${musicData.id}`;  // Using the track ID for uniqueness
         const template = `
-          <div class="eggs-music" style="background-image: url('${musicData.albumArt}')">
+          <div class="eggs-music" data-egg-id="${eggId}" style="background-image: url('${musicData.albumArt}')">
             <div class="overlap-group">
               <div class="frame">
                 <div class="info">
@@ -814,8 +1018,8 @@
                 <div class="timeline">
                   <div class="rectangle"></div>
                 </div>
-                <div class="play" onclick="toggleMusic('${musicData.previewUrl}', this)">
-                  <img class="icons-pause" src="assets/icons/play.svg" alt="Play">
+                <div class="play" onclick="toggleMusic('${musicData.previewUrl}')">
+                  <img src="assets/icons/play.svg" alt="Play">
                 </div>
               </div>
             </div>
@@ -826,28 +1030,8 @@
         wrapper.className = isInTray ? 'tray-egg' : 'egg-response';
         wrapper.innerHTML = template;
 
-        // Add suggestions as message bubbles if not in tray
+        // Start playing automatically if not in tray
         if (!isInTray) {
-          // Create suggestions for similar songs
-          const suggestions = [
-            {
-              title: "The Cure – Just Like Heaven",
-              image: musicData.albumArt,
-              previewUrl: musicData.previewUrl
-            },
-            {
-              title: "The Cure – Friday I'm in Love",
-              image: musicData.albumArt,
-              previewUrl: musicData.previewUrl
-            }
-          ];
-          
-          // Add suggestions after a short delay
-          setTimeout(() => {
-            addSuggestions(suggestions);
-          }, 500);
-
-          // Start playing automatically
           setTimeout(() => {
             const playButton = wrapper.querySelector('.play');
             toggleMusic(musicData.previewUrl, playButton);
@@ -857,88 +1041,109 @@
         return wrapper;
       }
 
+      function addMusicWithSuggestions(data) {
+        // First add the music egg
+        const chatContainer = document.querySelector('.chat');
+        const eggElement = createMusicEgg(data.result);
+        chatContainer.appendChild(eggElement);
+
+        // Then add suggestions from search results
+        const suggestions = data.suggestions.map(result => ({
+          id: result.id,
+          title: `${result.artist} – ${result.title}`,
+          image: result.albumArt,
+          previewUrl: result.previewUrl
+        }));
+
+        suggestions.forEach(suggestion => {
+          const suggestionElement = createMessageSuggestion(suggestion);
+          chatContainer.appendChild(suggestionElement);
+        });
+
+        // Update the egg tray
+        state.eggs.push({ type: 'music', data: data.result });
+        updateEggTray();
+
+        // Scroll to latest
+        scrollToLatest();
+      }
+
       // Audio handling
       let audioPlayer = null;
-      let currentPlayButton = null;
 
-      function toggleMusic(previewUrl, playButton) {
-        console.log('Toggling music:', previewUrl);
-        
-        // Update all play buttons with the same previewUrl
-        function updateAllButtons(url, isPaused) {
-          const allButtons = document.querySelectorAll('.play, .song-suggestion .icons-play');
-          allButtons.forEach(button => {
-            if (button.closest('[onclick*="' + url + '"]')) {
-              const icon = button.querySelector('img');
-              icon.src = isPaused ? 'assets/icons/play.svg' : 'assets/icons/pause.svg';
+      function toggleMusic(previewUrl) {
+        // Find all related play buttons (both in eggs and suggestions)
+        const allPlayButtons = document.querySelectorAll('.play');
+        const relevantButtons = Array.from(allPlayButtons).filter(btn => {
+          const onclickAttr = btn.getAttribute('onclick');
+          return onclickAttr && onclickAttr.includes(previewUrl);
+        });
+
+        function updatePlayButtons(isPaused) {
+          const icon = isPaused ? 'play' : 'pause';
+          relevantButtons.forEach(btn => {
+            const img = btn.querySelector('img');
+            if (img) {
+              const inSuggestion = btn.closest('.song-suggestion') !== null;
+              const suffix = inSuggestion ? '-white' : '';
+              img.src = `assets/icons/${icon}${suffix}.svg`;
             }
           });
         }
-        
+
+        // Handle audio playback
         if (audioPlayer && audioPlayer.src === previewUrl) {
           if (audioPlayer.paused) {
-            console.log('Resuming playback');
-            audioPlayer.volume = 1.0;
-            audioPlayer.play()
-              .then(() => {
-                updateAllButtons(previewUrl, false);
-                console.log('Playback resumed successfully');
-              })
-              .catch(error => {
-                console.error('Error resuming playback:', error);
-                updateAllButtons(previewUrl, true);
-              });
+            audioPlayer.play();
+            updatePlayButtons(false);
           } else {
-            console.log('Pausing playback');
             audioPlayer.pause();
-            updateAllButtons(previewUrl, true);
+            updatePlayButtons(true);
           }
         } else {
-          console.log('Starting new track');
+          // If different track was playing, reset its buttons
           if (audioPlayer) {
             const oldUrl = audioPlayer.src;
             audioPlayer.pause();
-            updateAllButtons(oldUrl, true);
+            
+            // Reset all play buttons
+            const allButtons = document.querySelectorAll('.play');
+            allButtons.forEach(btn => {
+              const img = btn.querySelector('img');
+              if (img) {
+                const inSuggestion = btn.closest('.song-suggestion') !== null;
+                const suffix = inSuggestion ? '-white' : '';
+                img.src = `assets/icons/play${suffix}.svg`;
+              }
+            });
           }
           
+          // Play new track
           audioPlayer = new Audio(previewUrl);
-          audioPlayer.volume = 1.0;
-          
-          audioPlayer.addEventListener('error', (e) => {
-            console.error('Audio error:', e);
-            updateAllButtons(previewUrl, true);
-          });
+          audioPlayer.play();
+          updatePlayButtons(false);
           
           audioPlayer.addEventListener('ended', () => {
-            updateAllButtons(previewUrl, true);
+            updatePlayButtons(true);
           });
-          
-          audioPlayer.play()
-            .then(() => {
-              updateAllButtons(previewUrl, false);
-              console.log('Playback started successfully');
-            })
-            .catch(error => {
-              console.error('Error starting playback:', error);
-              updateAllButtons(previewUrl, true);
-            });
         }
       }
 
       // Egg management
       function addEgg(egg, eggData) {
-        state.eggs.push({ type: egg, data: eggData });
-        
-        const chatContainer = document.querySelector('.chat');
-        const eggElement = egg === 'weather' 
-          ? createWeatherEgg(eggData)
-          : createMusicEgg(eggData);
-        
-        chatContainer.appendChild(eggElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        if (egg === 'weather') {
+          state.eggs.push({ type: egg, data: eggData });
+          
+          const chatContainer = document.querySelector('.chat');
+          const eggElement = createWeatherEgg(eggData);
+          chatContainer.appendChild(eggElement);
+          scrollToLatest();
 
-        // Also update the egg tray
-        updateEggTray();
+          // Update the egg tray
+          updateEggTray();
+        } else if (egg === 'music') {
+          addMusicWithSuggestions(eggData);
+        }
       }
 
       function updateEggTray() {
@@ -965,11 +1170,11 @@
       // Scroll handling
       function scrollToLatest() {
         const chat = document.querySelector('.chat');
-        const eggTray = document.querySelector('.egg-tray');
-        
-        // Calculate scroll position that shows the latest message just above the egg tray
-        const scrollTarget = chat.scrollHeight - chat.clientHeight + (eggTray.offsetHeight / 2);
-        chat.scrollTop = scrollTarget;
+        const lastMessage = chat.lastElementChild;
+        if (lastMessage) {
+          // Scroll the last message to be just above the egg tray
+          lastMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
 
       // Message handling
@@ -995,9 +1200,13 @@
         
         wrapper.innerHTML = `
           <div class="message-bubble assistant song-suggestion">
-            <img class="suggestion-image" src="${suggestion.image}" alt="Album art">
-            <div class="suggestion-text">${suggestion.title}</div>
-            <img class="icons-play" src="assets/icons/play.svg" alt="Play" onclick="toggleMusic('${suggestion.previewUrl}', this)">
+            <div class="suggestion-info">
+              <div class="suggestion-title">${suggestion.title.split(' – ')[0].toUpperCase()}</div>
+              <div class="suggestion-artist">${suggestion.title.split(' – ')[1].toUpperCase()}</div>
+            </div>
+            <div class="play" onclick="toggleMusic('${suggestion.previewUrl}')">
+              <img src="assets/icons/play-white.svg" alt="Play">
+            </div>
           </div>
         `;
         
@@ -1010,7 +1219,7 @@
           const suggestionElement = createMessageSuggestion(suggestion);
           chatContainer.appendChild(suggestionElement);
         });
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        scrollToLatest();
       }
 
       function addMessage(text, isUser = false) {
@@ -1060,33 +1269,70 @@
       // Message processing
       async function processMessage(text) {
         const lowerText = text.toLowerCase();
+        const commands = parseCommands(lowerText);
         
         try {
-          if (lowerText.includes('weather')) {
-            addMessage("Here's the current weather");
-            const weatherData = await getWeather();
-            addEgg('weather', weatherData);
-          } 
-          else if (lowerText.includes('play') || lowerText.includes('music')) {
-            addMessage("Let me find that music for you");
-            const searchTerm = text.replace(/play|music/gi, '').trim();
-            const musicResults = await searchMusicPreviews(searchTerm);
-            
-            if (musicResults.length > 0) {
-              addEgg('music', musicResults[0]);
-            } else {
-              addMessage("Sorry, I couldn't find that music");
+          state.isProcessing = true;
+          addMessage("I'll help you with that");
+          
+          // Process each command in sequence
+          for (const command of commands) {
+            switch (command.type) {
+              case 'weather':
+                const weatherData = await getWeather();
+                addEgg('weather', weatherData);
+                break;
+                
+              case 'music':
+                const searchTerm = command.query.trim();
+                if (searchTerm) {
+                  const musicResults = await searchMusicPreviews(searchTerm);
+                  if (musicResults.length > 0) {
+                    addEgg('music', {
+                      result: musicResults[0],
+                      suggestions: musicResults.slice(1, 3)
+                    });
+                  } else {
+                    addMessage(`Sorry, I couldn't find music for "${searchTerm}"`);
+                  }
+                }
+                break;
             }
-          } 
-          else {
+          }
+          
+          if (commands.length === 0) {
             addMessage("I'm working on understanding that request");
           }
         } catch (error) {
           console.error('Error processing message:', error);
           addMessage("Sorry, there was an error processing your request");
+        } finally {
+          state.isProcessing = false;
         }
+      }
+
+      // Command parsing
+      function parseCommands(text) {
+        const commands = [];
+        const parts = text.split(/\s+(?:and|&)\s+/); // Split on "and" or "&"
         
-        state.isProcessing = false;
+        parts.forEach(part => {
+          // Check for weather
+          if (part.includes('weather')) {
+            commands.push({ type: 'weather' });
+          }
+          
+          // Check for music/play commands
+          const musicMatch = part.match(/(?:play|music)(.*)/i);
+          if (musicMatch) {
+            const query = musicMatch[1].trim();
+            if (query) {
+              commands.push({ type: 'music', query });
+            }
+          }
+        });
+        
+        return commands;
       }
 
       // Enter key handling
