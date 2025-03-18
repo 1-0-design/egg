@@ -167,6 +167,28 @@
         }
 
         /* Transitions and animations */
+        .egg-morphing {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
+          will-change: transform, width, height, opacity;
+        }
+
+        .suggestion-morphing {
+          position: fixed;
+          z-index: 1000;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
+          will-change: transform, width, height, opacity;
+        }
+
+        .egg-fade {
+          opacity: 0;
+          transition: opacity 0.3s ease-out;
+        }
+
+        /* Transitions and animations */
         .morph-animation {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -571,8 +593,8 @@
           justify-content: center;
           gap: 30px;
           width: 100%;
-          max-width: 2500px;
-          margin: 0 auto;
+          padding: 0 30px;
+          position: relative;
         }
 
         /* Tray egg container */
@@ -580,6 +602,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          flex: 0 0 auto;
         }
         .eggs-music {
           background-color: rgba(0, 0, 0, 0.1);
@@ -591,8 +614,8 @@
           width: 320px;
           position: relative;
           overflow: hidden;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          transform-origin: center;
+          opacity: 1;
+          transition: opacity 0.3s ease-out;
         }
 
         .eggs-music::before {
@@ -1127,37 +1150,12 @@
       }
 
       function addMusicWithSuggestions(data) {
-        // Add initial egg to tray with fade in
-        const eggElement = createMusicEgg({
-          id: data.result.id,
-          title: data.result.title,
-          artist: data.result.artist,
-          albumArt: data.result.albumArt,
-          previewUrl: data.result.previewUrl
-        });
-        eggElement.style.opacity = '0';
-        
-        // Update state
-        if (state.activeMusicEgg) {
-          state.activeMusicEgg.classList.add('egg-fade');
-          setTimeout(() => state.activeMusicEgg.remove(), 300);
-        }
-        
-        const eggTray = document.querySelector('.egg-collection');
-        eggTray.innerHTML = '';
-        eggTray.appendChild(eggElement);
-        
-        // Trigger reflow
-        eggElement.offsetHeight;
-        
-        // Fade in new egg
-        eggElement.style.opacity = '1';
-        state.activeMusicEgg = eggElement;
-
-        // Add suggestions to chat
+        // Add all results as suggestions in ranked order
         const chatContainer = document.querySelector('.chat');
         
-        data.suggestions.forEach(result => {
+        // Add all suggestions
+        const allResults = [data.result, ...data.suggestions];
+        allResults.forEach(result => {
           const suggestionElement = createMessageSuggestion({
             id: result.id,
             title: result.title,
@@ -1168,15 +1166,48 @@
           chatContainer.appendChild(suggestionElement);
         });
 
+        // Create the tray egg with fade in
+        const trayEgg = createMusicEgg(data.result);
+        trayEgg.style.opacity = '0';
+        
+        // Update state and handle existing tray egg
+        if (state.activeMusicEgg) {
+          state.activeMusicEgg.classList.add('egg-fade');
+          setTimeout(() => state.activeMusicEgg.remove(), 300);
+        }
+        
+        const eggTray = document.querySelector('.egg-collection');
+        eggTray.innerHTML = '';
+        eggTray.appendChild(trayEgg);
+        
+        // Fade in tray egg
+        requestAnimationFrame(() => {
+          trayEgg.style.opacity = '1';
+        });
+        state.activeMusicEgg = trayEgg;
+
+        // Immediately trigger morphing on the first suggestion
+        const topSuggestion = chatContainer.querySelector('.song-suggestion');
+        morphSuggestionToEgg(
+          topSuggestion.closest('.frame-wrapper'),
+          data.result
+        );
+
         // Scroll to latest
         scrollToLatest();
       }
 
       // Audio handling
       let audioPlayer = null;
+      let isAudioTransitioning = false;
 
-      function toggleMusic(previewUrl) {
-        // Find all related play buttons (both in eggs and suggestions)
+      async function toggleMusic(previewUrl) {
+        // If we're already transitioning, wait
+        if (isAudioTransitioning) {
+          return;
+        }
+
+        // Find all play buttons for this track
         const allPlayButtons = document.querySelectorAll('.play');
         const relevantButtons = Array.from(allPlayButtons).filter(btn => {
           const onclickAttr = btn.getAttribute('onclick');
@@ -1198,38 +1229,46 @@
         // Handle audio playback
         if (audioPlayer && audioPlayer.src === previewUrl) {
           if (audioPlayer.paused) {
-            audioPlayer.play();
-            updatePlayButtons(false);
+            try {
+              isAudioTransitioning = true;
+              await audioPlayer.play();
+              updatePlayButtons(false);
+            } catch (error) {
+              console.log('Error playing audio:', error);
+            } finally {
+              isAudioTransitioning = false;
+            }
           } else {
             audioPlayer.pause();
             updatePlayButtons(true);
           }
         } else {
-          // If different track was playing, reset its buttons
+          // If different track was playing, pause it first
           if (audioPlayer) {
-            const oldUrl = audioPlayer.src;
             audioPlayer.pause();
-            
             // Reset all play buttons
-            const allButtons = document.querySelectorAll('.play');
-            allButtons.forEach(btn => {
-              const img = btn.querySelector('img');
-              if (img) {
-                const inSuggestion = btn.closest('.song-suggestion') !== null;
-                const suffix = inSuggestion ? '-white' : '';
-                img.src = `assets/icons/play${suffix}.svg`;
-              }
+            document.querySelectorAll('.play img').forEach(btn => {
+              const inSuggestion = btn.closest('.song-suggestion') !== null;
+              const suffix = inSuggestion ? '-white' : '';
+              btn.src = `assets/icons/play${suffix}.svg`;
             });
           }
           
-          // Play new track
-          audioPlayer = new Audio(previewUrl);
-          audioPlayer.play();
-          updatePlayButtons(false);
-          
-          audioPlayer.addEventListener('ended', () => {
-            updatePlayButtons(true);
-          });
+          // Create and play new track
+          try {
+            isAudioTransitioning = true;
+            audioPlayer = new Audio(previewUrl);
+            await audioPlayer.play();
+            updatePlayButtons(false);
+            
+            audioPlayer.addEventListener('ended', () => {
+              updatePlayButtons(true);
+            });
+          } catch (error) {
+            console.log('Error playing audio:', error);
+          } finally {
+            isAudioTransitioning = false;
+          }
         }
       }
 
@@ -1328,65 +1367,102 @@
       async function morphSuggestionToEgg(suggestionEl, suggestionData) {
         // Get dimensions and position
         const suggestionRect = suggestionEl.getBoundingClientRect();
+        const currentPlayer = document.querySelector('.chat .egg-response');
         
-        // Create temp egg with suggestion dimensions
-        const eggElement = createMusicEgg(suggestionData);
-        eggElement.style.position = 'fixed';
-        eggElement.style.top = `${suggestionRect.top}px`;
-        eggElement.style.left = `${suggestionRect.left}px`;
-        eggElement.style.width = `${suggestionRect.width}px`;
-        eggElement.style.height = `${suggestionRect.height}px`;
-        eggElement.style.opacity = '0';
-        eggElement.classList.add('egg-morphing');
+        // Create new egg floating above the original suggestion
+        const newEgg = createMusicEgg(suggestionData);
+        newEgg.style.position = 'fixed';
+        newEgg.style.top = `${suggestionRect.top}px`;
+        newEgg.style.left = `${suggestionRect.left}px`;
+        newEgg.style.width = `${suggestionRect.width}px`;
+        newEgg.style.height = `${suggestionRect.height}px`;
+        newEgg.style.opacity = '0';
+        newEgg.classList.add('egg-morphing');
         
         // Add to document
-        document.body.appendChild(eggElement);
+        document.body.appendChild(newEgg);
         
-        // Fade out suggestion
-        suggestionEl.classList.add('suggestion-fade');
-        
-        // Get egg tray for final position
-        const eggTray = document.querySelector('.egg-collection');
-        const trayRect = eggTray.getBoundingClientRect();
-        
-        // Wait a frame
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        
-        // Start morphing animation
-        eggElement.style.opacity = '1';
-        eggElement.style.width = '320px';
-        eggElement.style.height = '200px';
-        eggElement.style.transform = `
-          translate(${trayRect.left - suggestionRect.left}px,
-                   ${trayRect.top - suggestionRect.top}px)
-        `;
-        
-        // Let the animation finish
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Clean up suggestion
-        suggestionEl.remove();
-        
-        // Handle existing egg
-        if (state.activeMusicEgg) {
-          state.activeMusicEgg.classList.add('egg-fade');
-          await new Promise(resolve => setTimeout(resolve, 300));
-          state.activeMusicEgg.remove();
+        // Create and position the old suggestion that will replace the current player
+        if (currentPlayer) {
+          const currentData = {
+            id: currentPlayer.querySelector('.eggs-music').dataset.eggId.replace('music-', ''),
+            title: currentPlayer.querySelector('.song-title').textContent,
+            artist: currentPlayer.querySelector('.artist').textContent,
+            previewUrl: currentPlayer.querySelector('.play').getAttribute('onclick').match(/'([^']+)'/)[1],
+            albumArt: currentPlayer.querySelector('.album-artwork').src
+          };
+          
+          const oldMorphElement = createMessageSuggestion(currentData);
+          oldMorphElement.style.position = 'fixed';
+          const currentRect = currentPlayer.getBoundingClientRect();
+          oldMorphElement.style.top = `${currentRect.top}px`;
+          oldMorphElement.style.left = `${currentRect.left}px`;
+          oldMorphElement.style.width = `${currentRect.width}px`;
+          oldMorphElement.style.height = `${currentRect.height}px`;
+          oldMorphElement.style.opacity = '0';
+          oldMorphElement.classList.add('suggestion-morphing');
+          document.body.appendChild(oldMorphElement);
+
+          // Create final element in place
+          const finalSuggestion = createMessageSuggestion(currentData);
+          finalSuggestion.querySelector('.play img').src = 'assets/icons/play-white.svg';
+          finalSuggestion.style.opacity = '0';
+          currentPlayer.parentNode.replaceChild(finalSuggestion, currentPlayer);
+          
+          // Start morphing
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          oldMorphElement.style.opacity = '1';
+          oldMorphElement.style.width = suggestionRect.width + 'px';
+          oldMorphElement.style.height = suggestionRect.height + 'px';
+          oldMorphElement.style.top = finalSuggestion.getBoundingClientRect().top + 'px';
+          oldMorphElement.style.left = finalSuggestion.getBoundingClientRect().left + 'px';
+          
+          // Fade in final element once animation completes
+          setTimeout(() => {
+            oldMorphElement.remove();
+            finalSuggestion.style.opacity = '1';
+          }, 300);
         }
         
-        // Move egg to final position
-        eggElement.style.position = '';
-        eggElement.style.top = '';
-        eggElement.style.left = '';
-        eggElement.style.transform = '';
-        eggElement.classList.remove('egg-morphing');
+        // Create new tray egg with fade
+        const trayEgg = createMusicEgg(suggestionData);
+        trayEgg.style.opacity = '0';
+        const eggTray = document.querySelector('.egg-collection');
         
-        // Update tray
+        // Handle existing tray egg
+        if (state.activeMusicEgg) {
+          state.activeMusicEgg.classList.add('egg-fade');
+          setTimeout(() => state.activeMusicEgg.remove(), 300);
+        }
+        
+        // Add new egg to tray
         eggTray.innerHTML = '';
-        eggTray.appendChild(eggElement);
+        eggTray.appendChild(trayEgg);
+        
+        // Start morphing the new player egg
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        newEgg.style.opacity = '1';
+        newEgg.style.width = '320px';
+        newEgg.style.height = '200px';
+        
+        // Fade in tray egg
+        trayEgg.style.opacity = '1';
+        
+        // Create final element in place
+        const finalEgg = createMusicEgg(suggestionData);
+        finalEgg.className = 'egg-response';
+        finalEgg.style.opacity = '0';
+        suggestionEl.parentNode.replaceChild(finalEgg, suggestionEl);
+        
+        // Wait for animations
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Clean up
+        newEgg.remove();
+        finalEgg.style.opacity = '1';
         
         // Update state and start playing
-        state.activeMusicEgg = eggElement;
+        state.activeMusicEgg = trayEgg;
         toggleMusic(suggestionData.previewUrl);
       }
 
