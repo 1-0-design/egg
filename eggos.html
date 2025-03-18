@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg OS</title>
+    <style>
+        @font-face {
+            font-family: "Cash Sans-Medium";
+            src: local("SF Pro Text"), local("Helvetica Neue"), local("Helvetica"), local("Arial"), sans-serif;
+            font-weight: 500;
+        }
+        
+        @font-face {
+            font-family: "Cash Sans-Semibold";
+            src: local("SF Pro Text"), local("Helvetica Neue"), local("Helvetica"), local("Arial"), sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Your provided CSS */
+        .content {
+          align-items: flex-start;
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+          height: 100vh;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .chat {
+          align-items: center;
+          align-self: stretch;
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          flex-grow: 1;
+          gap: 15px;
+          overflow-y: scroll;
+          padding: 30px 30px 0px;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .chat::-webkit-scrollbar {
+          display: none;
+          width: 0;
+        }
+
+        .content .text-wrapper {
+          align-self: stretch;
+          color: #0000004c;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          height: 48px;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+          text-align: center;
+        }
+
+        .content .response {
+          align-self: stretch;
+          height: 60px;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .frame {
+          align-items: center;
+          background-color: #000000;
+          border-radius: 100px;
+          box-shadow: inset 0px 1px 1px #ffffff40, 0px 5px 15px #00000026;
+          display: inline-flex;
+          gap: 10px;
+          height: 60px;
+          padding: 23px 30px;
+          position: relative;
+        }
+
+        .content .div {
+          color: #ffffff;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -0.50px;
+          position: relative;
+          white-space: nowrap;
+          width: fit-content;
+        }
+
+        .content .egg-tray {
+          -webkit-backdrop-filter: blur(25px) brightness(100%);
+          align-items: center;
+          align-self: stretch;
+          backdrop-filter: blur(25px) brightness(100%);
+          background-color: #ffffff4c;
+          border-radius: 60px 60px 0px 0px;
+          box-shadow: inset 0px 1px 1px #ffffff40, 0px 4px 50px #00000026;
+          display: flex;
+          flex: 0 0 auto;
+          flex-direction: column;
+          gap: 15px;
+          padding: 30px;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .frame-2 {
+          align-items: center;
+          align-self: stretch;
+          background-color: #ffffff;
+          border-radius: 100px;
+          box-shadow: inset 0px 1px 1px #ffffff40, 0px 5px 15px #00000026;
+          display: flex;
+          gap: 10px;
+          height: 60px;
+          justify-content: center;
+          padding: 23px 6px 23px 30px;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .text-wrapper-2 {
+          align-self: stretch;
+          color: #000000;
+          flex: 1;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+          white-space: nowrap;
+        }
+
+        .content .more-button-wrapper {
+          align-items: center;
+          background-color: #0000000d;
+          border-radius: 100px;
+          display: inline-flex;
+          flex: 0 0 auto;
+          gap: 6px;
+          margin-bottom: -17.00px;
+          margin-top: -17.00px;
+          position: relative;
+        }
+
+        .content .more-button {
+          align-items: center;
+          border-radius: 24px;
+          display: flex;
+          gap: 10px;
+          height: 48px;
+          padding: 12px;
+          position: relative;
+          width: 48px;
+        }
+
+        .content .icons-mic {
+          flex: 0 0 auto !important;
+          position: relative !important;
+        }
+
+        .content .div-wrapper {
+          all: unset;
+          align-items: center;
+          background-color: #0000000d;
+          border-radius: 100px;
+          box-sizing: border-box;
+          display: flex;
+          gap: 6px;
+          margin-bottom: -17.00px;
+          margin-top: -17.00px;
+          position: relative;
+          width: 80px;
+        }
+
+        .content .button {
+          all: unset;
+          align-items: center;
+          border-radius: 24px;
+          box-sizing: border-box;
+          display: flex;
+          flex: 1;
+          flex-grow: 1;
+          gap: 10px;
+          height: 48px;
+          padding: 12px;
+          position: relative;
+        }
+
+        .content .text-wrapper-3 {
+          color: #000000;
+          flex: 1;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+          text-align: center;
+        }
+
+        .content .frame-3 {
+          align-items: center;
+          align-self: stretch;
+          display: flex;
+          flex: 0 0 auto;
+          gap: 30px;
+          justify-content: center;
+          padding: 0px 30px;
+          position: relative;
+          width: 100%;
+        }
+
+        .content .frame-4 {
+          align-items: center;
+          display: flex;
+          flex: 1;
+          flex-grow: 1;
+          gap: 15px;
+          position: relative;
+        }
+
+        .content .image {
+          height: 24px;
+          object-fit: cover;
+          position: relative;
+          width: 24px;
+        }
+
+        .content .text-wrapper-4 {
+          color: #000000;
+          flex: 1;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          height: 48px;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -1.00px;
+          position: relative;
+        }
+
+        .content .rectangle-wrapper {
+          align-self: stretch;
+          flex: 1;
+          flex-grow: 1;
+          position: relative;
+        }
+
+        .content .rectangle {
+          background-color: #000000;
+          border-radius: 7px;
+          height: 8px;
+          left: 233px;
+          position: relative;
+          top: 20px;
+          width: 50px;
+        }
+
+        .content .text-wrapper-5 {
+          color: #000000;
+          flex: 1;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          height: 48px;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -1.00px;
+          position: relative;
+          text-align: right;
+        }
+
+        .content .text-wrapper-6 {
+          color: #ff7e07;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+          text-align: right;
+          white-space: nowrap;
+          width: fit-content;
+        }
+
+        .content .ellipse {
+          border: 3px solid;
+          border-color: #ff7e07;
+          border-radius: 12px;
+          height: 24px;
+          position: relative;
+          width: 24px;
+        }
+        
+        /* Additional body styles for proper display */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: #f5f5f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+      <div class="chat">
+        <div class="text-wrapper">9:24 PM</div>
+
+        <div class="response">
+          <div class="frame">
+            <p class="div">Welcome to Egg OS. Please link an API key.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="egg-tray">
+        <div class="frame-2">
+          <div class="text-wrapper-2">ask for anything</div>
+
+          <div class="more-button-wrapper">
+            <div class="more-button">
+              <!-- Microphone SVG Icon -->
+              <svg class="icons-mic" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 11C19 15.4183 15.8519 18 12 18C8.14806 18 5 15.4183 5 11" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 18V22" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <button class="div-wrapper">
+            <button class="button">
+              <div class="text-wrapper-3">send</div>
+            </button>
+          </button>
+        </div>
+
+        <div class="frame-3">
+          <div class="frame-4">
+            <!-- Placeholder for the image -->
+            <svg class="image" width="24" height="24" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="12" fill="#ccc"/>
+            </svg>
+
+            <div class="text-wrapper-4">Log In</div>
+          </div>
+
+          <div class="rectangle-wrapper">
+            <div class="rectangle"></div>
+          </div>
+
+          <div class="frame-4">
+            <div class="text-wrapper-5">9:28 PM</div>
+
+            <div class="text-wrapper-6">Configure</div>
+
+            <div class="ellipse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Update the time display
+      function updateTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        const timeDisplay = document.querySelector('.text-wrapper');
+        const timeDisplay2 = document.querySelector('.text-wrapper-5');
+        
+        if (timeDisplay) {
+          timeDisplay.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+        }
+        
+        if (timeDisplay2) {
+          timeDisplay2.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+        }
+      }
+      
+      // Update time on page load
+      updateTime();
+      
+      // Update time every minute
+      setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>

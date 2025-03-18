@@ -1,0 +1,154 @@
+.eggs-music {
+  background-image: url(../assets/music.svg);
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 30px;
+  box-shadow: 0px 5px 15px #00000026, inset 0px 1px 1px #ffffff40;
+  height: 200px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.eggs-music .overlap-group {
+  -webkit-backdrop-filter: blur(50px) brightness(100%);
+  backdrop-filter: blur(50px) brightness(100%);
+  background-color: #ffffff4c;
+  height: 200px;
+  position: relative;
+}
+
+.eggs-music .frame {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  left: 30px;
+  position: absolute;
+  top: 30px;
+  width: 260px;
+}
+
+.eggs-music .frame-2 {
+  align-items: flex-start;
+  align-self: stretch;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.eggs-music .text-wrapper {
+  align-self: stretch;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1.00px;
+  position: relative;
+}
+
+.eggs-music .text-wrapper-2 {
+  align-self: stretch;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+}
+
+.eggs-music .more-button {
+  align-items: center;
+  background-color: #0000000d;
+  border-radius: 24px;
+  display: flex;
+  gap: 10px;
+  height: 48px;
+  padding: 12px;
+  position: relative;
+  width: 48px;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.eggs-music .more-button:hover {
+  background-color: #00000015;
+}
+
+.eggs-music .frame-3 {
+  align-items: center;
+  display: flex;
+  gap: 30px;
+  left: 30px;
+  position: absolute;
+  top: 122px;
+  width: 260px;
+}
+
+.eggs-music .album-artwork {
+  height: 48px;
+  width: 48px;
+  object-fit: cover;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.eggs-music .timeline {
+  background-color: #00000026;
+  border-radius: 3px;
+  flex: 1;
+  flex-grow: 1;
+  height: 6px;
+  position: relative;
+}
+
+.eggs-music .rectangle-5 {
+  background-color: #000000;
+  border-radius: 3px;
+  height: 6px;
+  width: 18px;
+}
+
+.eggs-music .pause-button {
+  background-color: #000000;
+  border-radius: 24px;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.eggs-music .pause-button:hover {
+  transform: scale(1.05);
+}
+
+.eggs-music .pause-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.eggs-music .pause-bar {
+  background-color: #ffffff;
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.eggs-music .play-icon {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 14px;
+  border-color: transparent transparent transparent #ffffff;
+  margin-left: 3px;
+}

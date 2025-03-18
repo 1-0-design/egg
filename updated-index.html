@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg - AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/styles/goose-settings.css">
+    <link rel="stylesheet" href="src/styles/icons.css">
+    <link rel="stylesheet" href="src/styles/app-eggs.css">
+    <link rel="stylesheet" href="src/styles/updated-egg-tray.css">
+</head>
+<body class="font-size-base">
+    <div class="app-container">
+        <!-- Eggs Container (top of screen) -->
+        <div class="eggs-container">
+            <!-- Eggs will be dynamically added here -->
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <textarea placeholder="Ask anything..."></textarea>
+                <button class="send-button">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </span>
+                </button>
+                <button class="voice-button">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </span>
+                </button>
+                <button class="settings-button" id="settings-toggle">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings Panel (initially hidden) -->
+        <div class="settings-panel" style="display: none;">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="close-settings">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div class="settings-tabs">
+                <button class="tab-button active" data-tab="general">General</button>
+                <button class="tab-button" data-tab="appearance">Appearance</button>
+                <button class="tab-button" data-tab="goose">Goose Integration</button>
+            </div>
+            <div class="settings-content">
+                <!-- General Settings Tab -->
+                <div class="tab-content active" id="general-tab">
+                    <div class="setting-group">
+                        <label for="api-provider">AI Provider</label>
+                        <select id="api-provider">
+                            <option value="anthropic">Anthropic Claude</option>
+                            <option value="goose">Goose by Block</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label for="api-key">API Key</label>
+                        <input type="password" id="api-key" placeholder="Enter your API key">
+                        <p class="helper-text">Your API key is stored locally and never sent to our servers</p>
+                    </div>
+                    <div class="setting-group">
+                        <label>Voice Input</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="voice-toggle" checked>
+                            <label for="voice-toggle"></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Tab -->
+                <div class="tab-content" id="appearance-tab">
+                    <div class="setting-group">
+                        <label>Theme</label>
+                        <div class="theme-options">
+                            <div class="theme-option selected">
+                                <div class="theme-preview light-theme"></div>
+                                <span>Light</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview dark-theme"></div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="theme-option">
+                                <div class="theme-preview system-theme"></div>
+                                <span>System</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label for="font-size">Font Size</label>
+                        <div class="font-size-options">
+                            <button class="font-size-option" data-size="sm">Small</button>
+                            <button class="font-size-option active" data-size="base">Medium</button>
+                            <button class="font-size-option" data-size="lg">Large</button>
+                            <button class="font-size-option" data-size="xl">Extra Large</button>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label for="blur-level">Blur Effect</label>
+                        <input type="range" id="blur-level" min="0" max="20" step="1" value="15">
+                        <div class="range-labels">
+                            <span>None</span>
+                            <span>Maximum</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Goose Integration Tab -->
+                <div class="tab-content" id="goose-tab">
+                    <div id="goose-settings-container">
+                        <!-- GooseSettings component will render here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Egg Tray Container -->
+    <div id="egg-tray" class="egg-tray"></div>
+
+    <script src="updated-script.js" type="module"></script>
+    <script type="module">
+        import GooseSettings from './src/components/GooseSettings.js';
+        
+        // Initialize settings panel functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsToggle = document.getElementById('settings-toggle');
+            const settingsPanel = document.querySelector('.settings-panel');
+            const closeSettings = document.querySelector('.close-settings');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Toggle settings panel
+            settingsToggle.addEventListener('click', () => {
+                settingsPanel.style.display = 'block';
+            });
+            
+            closeSettings.addEventListener('click', () => {
+                settingsPanel.style.display = 'none';
+            });
+            
+            // Tab switching
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Show selected tab content
+                    const tabName = button.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                    
+                    // Initialize Goose settings if that tab is selected
+                    if (tabName === 'goose') {
+                        const container = document.getElementById('goose-settings-container');
+                        GooseSettings.init(container);
+                    }
+                });
+            });
+            
+            // Load saved preferences
+            function loadSavedPreferences() {
+                // Load font size preference
+                const savedFontSize = localStorage.getItem('egg_font_size');
+                if (savedFontSize) {
+                    document.body.classList.remove('font-size-sm', 'font-size-base', 'font-size-lg', 'font-size-xl');
+                    document.body.classList.add(`font-size-${savedFontSize}`);
+                    
+                    // Update active button
+                    document.querySelectorAll('.font-size-option').forEach(opt => {
+                        opt.classList.remove('active');
+                        if (opt.dataset.size === savedFontSize) {
+                            opt.classList.add('active');
+                        }
+                    });
+                }
+                
+                // Load blur effect preference
+                const savedBlurEffect = localStorage.getItem('egg_blur_effect');
+                if (savedBlurEffect) {
+                    document.documentElement.style.setProperty('--blur-effect', `${savedBlurEffect}px`);
+                    document.getElementById('blur-level').value = savedBlurEffect;
+                }
+            }
+            
+            // Load preferences
+            loadSavedPreferences();
+        });
+    </script>
+</body>
+</html>

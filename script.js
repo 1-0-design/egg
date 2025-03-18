@@ -1,343 +1,360 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Load app eggs modules
-    Promise.all([
-        import('./src/utils/app-eggs.js').catch(err => {
-            console.warn('Failed to load app-eggs.js:', err);
-            return { WeatherEgg: null, MusicEgg: null };
-        }),
-        import('./src/utils/app-eggs/music-preview/index.js').catch(err => {
-            console.warn('Failed to load music preview:', err);
-            return { default: null };
-        })
-    ])
-        .then(([appEggsModule, musicPreviewModule]) => {
-            if (appEggsModule) {
-                window.WeatherEgg = appEggsModule.WeatherEgg;
-                window.MusicEgg = appEggsModule.MusicEgg;
-            }
-            
-            if (musicPreviewModule && musicPreviewModule.default) {
-                window.MusicPreviewEgg = musicPreviewModule.default;
-            }
-        })
-        .catch(error => console.error('Error loading app eggs:', error));
-
-    // DOM Elements
-    const eggsContainer = document.querySelector('.eggs-container');
-    const textarea = document.querySelector('textarea');
-    const sendButton = document.querySelector('.send-button');
-    const voiceButton = document.querySelector('.voice-button');
-    const chatMessages = document.querySelector('.chat-messages');
-    const resultView = document.querySelector('.result-view');
+// script.js - Egg Tray Implementation
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the egg tray element
+  const eggTray = document.getElementById('egg-tray');
+  
+  // Mock user state - replace with actual auth logic in production
+  const userState = {
+    isLoggedIn: true,
+    username: localStorage.getItem('egg_username') || 'User',
+    avatar: localStorage.getItem('egg_avatar') || null
+  };
+  
+  // Mock data - in a real app, this would come from your API
+  const activeRequests = [
+    {
+      type: 'weather',
+      data: {
+        location: 'KILAUEA, HI',
+        condition: 'SUNNY',
+        temperature: '72°F'
+      }
+    },
+    {
+      type: 'music',
+      data: {
+        title: 'ALONE',
+        artist: 'THE CURE',
+        albumArtwork: 'assets/alone-album.svg'
+      }
+    }
+  ];
+  
+  // Initialize the egg tray with default collapsed state
+  function initializeTray() {
+    // Add a handle for dragging
+    const trayHandle = document.createElement('div');
+    trayHandle.className = 'tray-handle';
     
-    // Example of adding a new egg when sending a message
-    sendButton.addEventListener('click', () => {
-        const message = textarea.value.trim();
-        if (!message) return;
+    // Add the handle as the first element
+    if (eggTray.firstChild) {
+      eggTray.insertBefore(trayHandle, eggTray.firstChild);
+    } else {
+      eggTray.appendChild(trayHandle);
+    }
+    
+    // Create the content container for scrolling
+    const scrollContainer = document.createElement('div');
+    scrollContainer.className = 'tray-scroll-container';
+    
+    // Create HTML structure
+    const trayHTML = `
+      <div class="frame-7">
+        <div class="text-wrapper-6" id="egg-tray-input" contenteditable="true" placeholder="ask for anything"></div>
         
-        // Add user message to chat
-        addMessage(message, 'user');
+        <div class="more-button-wrapper">
+          <div class="icons-mic-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icons-mic">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </div>
+        </div>
         
-        // Check for special commands
-        if (message.toLowerCase().includes('weather')) {
-            processWeatherRequest(message);
-        } else if (
-            message.toLowerCase().includes('play') || 
-            message.toLowerCase().includes('music') || 
-            message.toLowerCase().includes('song') || 
-            message.toLowerCase().includes('tidal')
-        ) {
-            processMusicRequest(message);
-        } else {
-            // Create a regular egg for the task
-            createEgg(message);
-        }
+        <button class="div-wrapper">
+          <button class="button">
+            <div class="text-wrapper-7">send</div>
+          </button>
+        </button>
+      </div>
+      
+      <div class="frame-8">
+        <div class="frame-9">
+          ${userState.avatar 
+            ? `<img class="image" alt="${userState.username}" src="${userState.avatar}" />` 
+            : `<div class="image"></div>`}
+          <div class="text-wrapper-8">${userState.username}</div>
+        </div>
         
-        // Add assistant response
-        setTimeout(() => {
-            addMessage('I\'m working on your request. This may take a moment...', 'assistant');
-        }, 500);
+        <div class="rectangle-wrapper">
+          <div class="rectangle-6"></div>
+        </div>
         
-        // Clear input
-        textarea.value = '';
+        <div class="frame-9">
+          <div class="text-wrapper-9" id="tray-time-display"></div>
+          <div class="ellipse" ${!userState.isLoggedIn ? 'style="background-color: #999;"' : ''}></div>
+        </div>
+      </div>
+      
+      <div class="frame-10" id="active-eggs-container">
+        ${renderActiveEggs(activeRequests)}
+      </div>
+    `;
+    
+    // Set the scroll container content
+    scrollContainer.innerHTML = trayHTML;
+    
+    // Append the scroll container to the tray
+    eggTray.appendChild(scrollContainer);
+    
+    // Set the initial state
+    setTrayState('collapsed');
+    
+    // Set proper login state class
+    if (!userState.isLoggedIn) {
+      eggTray.classList.add('logged-out');
+    }
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Update the time display
+    updateTimeDisplay();
+    setInterval(updateTimeDisplay, 60000);
+  }
+  
+  // Render active eggs (weather, music, etc)
+  function renderActiveEggs(requests) {
+    if (!requests || requests.length === 0) {
+      return `
+        <div class="egg-tray-empty-state">
+          <div class="empty-state-icon">✨</div>
+          <div class="empty-state-title">No active tasks</div>
+          <div class="empty-state-text">Ask me anything to get started!</div>
+        </div>
+      `;
+    }
+    
+    let eggsHTML = '';
+    
+    requests.forEach(request => {
+      if (request.type === 'weather') {
+        eggsHTML += `
+          <div class="eggs-weather-sunny">
+            <div class="frame">
+              <div class="frame-2">
+                <div class="text-wrapper">${request.data.location}</div>
+                <div class="text-wrapper-2">${request.data.condition}</div>
+              </div>
+              <div class="more-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="6" r="1"></circle>
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="18" r="1"></circle>
+                </svg>
+              </div>
+            </div>
+            <div class="frame-3">
+              <div class="text-wrapper-3">${request.data.temperature}</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icons-sun-instance">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (request.type === 'music') {
+        eggsHTML += `
+          <div class="eggs-music">
+            <div class="overlap-group">
+              <div class="frame">
+                <div class="frame-2">
+                  <div class="text-wrapper">${request.data.title}</div>
+                  <div class="text-wrapper-2">${request.data.artist}</div>
+                </div>
+                <div class="more-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="6" r="1"></circle>
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="18" r="1"></circle>
+                  </svg>
+                </div>
+              </div>
+              <div class="frame-3">
+                <img class="album-artwork" alt="Album artwork" src="${request.data.albumArtwork}">
+                <div class="timeline">
+                  <div class="rectangle-5"></div>
+                </div>
+                <div class="pause-button">
+                  <div class="pause-icon">
+                    <div class="pause-bar"></div>
+                    <div class="pause-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      // Add other types of eggs here as needed
     });
     
-    // Handle enter key in textarea
-    textarea.addEventListener('keydown', (e) => {
+    return eggsHTML;
+  }
+  
+  // Set up event listeners
+  function setupEventListeners() {
+    const trayHandle = document.querySelector('.tray-handle');
+    const eggTrayInput = document.getElementById('egg-tray-input');
+    const micButton = document.querySelector('.icons-mic-wrapper');
+    const sendButton = document.querySelector('.div-wrapper');
+    
+    // Handle drag interaction
+    let initialY, currentState;
+    
+    trayHandle.addEventListener('mousedown', startDrag);
+    trayHandle.addEventListener('touchstart', startDrag, { passive: true });
+    
+    function startDrag(e) {
+      initialY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+      currentState = eggTray.classList.contains('collapsed') ? 'collapsed' : 'expanded';
+      
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', drag, { passive: false });
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+      
+      trayHandle.style.cursor = 'grabbing';
+    }
+    
+    function drag(e) {
+      e.preventDefault();
+      const currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+      const deltaY = currentY - initialY;
+      
+      if (currentState === 'collapsed' && deltaY < -20) {
+        setTrayState('expanded');
+      } else if (currentState === 'expanded' && deltaY > 20) {
+        setTrayState('collapsed');
+      }
+    }
+    
+    function endDrag() {
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('touchmove', drag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+      trayHandle.style.cursor = 'grab';
+    }
+    
+    // Toggle tray on click on handle
+    trayHandle.addEventListener('click', () => {
+      toggleTrayState();
+    });
+    
+    // Input field focus/blur events
+    if (eggTrayInput) {
+      // Handle contenteditable placeholder
+      eggTrayInput.addEventListener('focus', function() {
+        if (this.textContent.trim() === '') {
+          this.textContent = '';
+          this.classList.add('user-typing');
+        }
+        // Expand tray when input is focused
+        setTrayState('expanded');
+      });
+      
+      eggTrayInput.addEventListener('blur', function() {
+        if (this.textContent.trim() === '') {
+          this.textContent = '';
+          this.classList.remove('user-typing');
+        }
+      });
+      
+      eggTrayInput.addEventListener('input', function() {
+        if (this.textContent.trim() !== '') {
+          this.classList.add('user-typing');
+        } else {
+          this.classList.remove('user-typing');
+        }
+      });
+      
+      // Handle send on Enter (but allow Shift+Enter for new line)
+      eggTrayInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendButton.click();
+          e.preventDefault();
+          sendMessage();
         }
-    });
-    
-    // Process weather request
-    async function processWeatherRequest(message) {
-        // Extract location from message (if any)
-        const locationMatch = message.match(/weather\s+(?:in|for|at)\s+([^?.,]+)/i);
-        const location = locationMatch ? locationMatch[1].trim() : null;
-        
-        // Create a processing egg
-        const eggId = 'weather-' + Date.now();
-        const eggElement = createProcessingEgg('Weather', eggId);
-        
-        // Add to container
-        eggsContainer.prepend(eggElement);
-        
-        try {
-            // Add response to chat
-            addMessage(`I'll check the weather${location ? ' for ' + location : ' for your location'}.`, 'assistant');
-            
-            // Check if WeatherEgg is available
-            if (window.WeatherEgg && typeof window.WeatherEgg.fetchWeatherData === 'function') {
-                // Fetch weather data
-                const weatherData = await window.WeatherEgg.fetchWeatherData(location);
-                
-                // Create weather egg
-                const weatherEgg = window.WeatherEgg.create(weatherData);
-                
-                // Replace processing egg with weather egg
-                eggsContainer.replaceChild(weatherEgg, eggElement);
-                
-                // Add completion message
-                addMessage(`Here's the current weather for ${weatherData.location}. It's ${weatherData.condition} with a temperature of ${Math.round(weatherData.temp)}°F.`, 'assistant');
-            } else {
-                // WeatherEgg not available
-                completeEgg(eggElement, 'Weather Unavailable');
-                addMessage('Sorry, I can\'t check the weather right now because the weather service is unavailable. Please try again later.', 'assistant');
-            }
-        } catch (error) {
-            console.error('Weather error:', error);
-            completeEgg(eggElement, 'Weather');
-            addMessage('I had trouble getting the weather information. Please try again later.', 'assistant');
-        }
+      });
     }
     
-    // Process music request
-    async function processMusicRequest(message) {
-        // Extract song or artist from message
-        const songMatch = message.match(/play\s+(?:music|song|track)?\s*(?:by|from)?\s*([^?.,]+)/i);
-        const searchQuery = songMatch ? songMatch[1].trim() : 'popular songs';
-        
-        // Create a processing egg
-        const eggId = 'music-' + Date.now();
-        const eggElement = createProcessingEgg('Music', eggId);
-        
-        // Add to container
-        eggsContainer.prepend(eggElement);
-        
-        try {
-            // Add response to chat
-            addMessage(`I'll find and play music for "${searchQuery}" for you.`, 'assistant');
-            
-            // Create a music player container if it doesn't exist
-            let musicContainer = document.getElementById('music-player-container');
-            if (!musicContainer) {
-                musicContainer = document.createElement('div');
-                musicContainer.id = 'music-player-container';
-                eggsContainer.prepend(musicContainer);
-            }
-            
-            // Initialize music player with the container ID
-            if (window.MusicPreviewEgg && typeof window.MusicPreviewEgg.init === 'function') {
-                try {
-                    const musicPlayer = await window.MusicPreviewEgg.init('music-player-container');
-                    
-                    // If we have a player, search for tracks and play the first one
-                    if (musicPlayer && typeof musicPlayer.search === 'function') {
-                        await musicPlayer.search(searchQuery);
-                        
-                        // Complete the egg
-                        completeEgg(eggElement, 'Music Preview');
-                        
-                        // Add completion message
-                        addMessage(`I've found some music for "${searchQuery}". Click on a track to play a 30-second preview.`, 'assistant');
-                    } else {
-                        console.error('Music player not properly initialized or missing search method');
-                        throw new Error('Music player not properly initialized');
-                    }
-                } catch (error) {
-                    console.error('Music player initialization error:', error);
-                    throw error;
-                }
-            } else if (window.MusicEgg && typeof window.MusicEgg.searchTracks === 'function') {
-                // Fallback to the original music egg if the new one isn't available
-                const tracks = await window.MusicEgg.searchTracks(searchQuery);
-                
-                if (tracks && tracks.length > 0) {
-                    // Create music egg with the first track
-                    const musicEgg = window.MusicEgg.create(tracks[0]);
-                    
-                    // Replace processing egg with music egg
-                    eggsContainer.replaceChild(musicEgg, eggElement);
-                    
-                    // Add completion message
-                    addMessage(`I'm now playing "${tracks[0].title}" by ${tracks[0].artist}. You can control playback from the player.`, 'assistant');
-                } else {
-                    completeEgg(eggElement, 'Music');
-                    addMessage('I couldn\'t find any tracks matching your request. Please try a different search.', 'assistant');
-                }
-            } else {
-                // No music player available
-                completeEgg(eggElement, 'Music Unavailable');
-                addMessage('Sorry, I can\'t play music right now because the music service is unavailable. Please try again later.', 'assistant');
-            }
-        } catch (error) {
-            console.error('Music error:', error);
-            completeEgg(eggElement, 'Music');
-            addMessage('I had trouble with the music playback. Please try again later. Error: ' + error.message, 'assistant');
-        }
+    // Mic button
+    if (micButton) {
+      micButton.addEventListener('click', () => {
+        // Handle voice input - in production, would integrate with a voice API
+        console.log('Voice input requested');
+        setTrayState('expanded');
+        alert('Voice input activated! (This is a placeholder)');
+      });
     }
     
-    // Function to add message to chat
-    function addMessage(content, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', `${sender}-message`);
-        
-        const messageContent = document.createElement('div');
-        messageContent.classList.add('message-content');
-        messageContent.textContent = content;
-        
-        messageDiv.appendChild(messageContent);
-        chatMessages.appendChild(messageDiv);
-        
-        // Scroll to bottom
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Send button
+    if (sendButton) {
+      sendButton.addEventListener('click', sendMessage);
     }
-    
-    // Function to create a processing egg
-    function createProcessingEgg(summary, id) {
-        // Create egg element
-        const eggDiv = document.createElement('div');
-        eggDiv.classList.add('egg', 'processing');
-        eggDiv.id = id;
-        
-        eggDiv.innerHTML = `
-            <div class="egg-content">
-                <div class="egg-summary">${summary}</div>
-                <div class="egg-preview">
-                    <img src="placeholder-favicon.svg" alt="Website Favicon" class="favicon">
-                    <div class="preview-window">
-                        <div class="placeholder-preview">Processing...</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        return eggDiv;
+  }
+  
+  // Toggle between collapsed and expanded states
+  function toggleTrayState() {
+    if (eggTray.classList.contains('collapsed')) {
+      setTrayState('expanded');
+    } else {
+      setTrayState('collapsed');
     }
-    
-    // Function to create a new egg
-    function createEgg(prompt) {
-        // Create a short summary (first 20 chars)
-        const summary = prompt.length > 20 ? prompt.substring(0, 20) + '...' : prompt;
-        
-        // Create egg element with an ID
-        const eggId = 'egg-' + Date.now();
-        const eggDiv = createProcessingEgg(summary, eggId);
-        
-        // Add click event to show full result when clicked
-        eggDiv.addEventListener('click', () => {
-            showResult(prompt, eggDiv.classList.contains('completed'));
-        });
-        
-        // Add to container
-        eggsContainer.prepend(eggDiv);
-        
-        // Simulate processing completion after some time
-        setTimeout(() => {
-            completeEgg(eggDiv, summary);
-            
-            // Add completion message to chat
-            addMessage('I\'ve completed your request! Click the egg to view the full results.', 'assistant');
-        }, 3000); // 3 seconds for demo
+  }
+  
+  // Set the tray state explicitly
+  function setTrayState(state) {
+    if (state === 'collapsed') {
+      eggTray.classList.add('collapsed');
+      eggTray.classList.remove('expanded');
+    } else {
+      eggTray.classList.remove('collapsed');
+      eggTray.classList.add('expanded');
     }
+  }
+  
+  // Function to send a message
+  function sendMessage() {
+    const inputElement = document.getElementById('egg-tray-input');
+    if (!inputElement) return;
     
-    // Function to mark egg as completed
-    function completeEgg(eggElement, summary) {
-        eggElement.classList.remove('processing');
-        eggElement.classList.add('completed');
-        
-        // Replace content with summary and checkmark
-        eggElement.innerHTML = `
-            <div class="egg-content">
-                <div class="egg-summary">${summary}</div>
-                <div class="checkmark">
-                    <span class="icon icon-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </span>
-                </div>
-            </div>
-        `;
+    const message = inputElement.textContent.trim();
+    if (message) {
+      console.log('Sending message:', message);
+      
+      // Here you would normally process the message and get a response
+      // For demo, we'll just clear the input
+      inputElement.textContent = '';
+      inputElement.classList.remove('user-typing');
+      
+      // Make sure the tray stays expanded
+      setTrayState('expanded');
+      
+      // In a real app, you'd add the response to active requests
+      // and update the eggs container
     }
-    
-    // Function to show the full-screen result
-    function showResult(prompt, isCompleted) {
-        if (!isCompleted) {
-            alert('This task is still processing. Please wait for it to complete.');
-            return;
-        }
-        
-        // Set the title
-        document.querySelector('.result-title').textContent = prompt.length > 30 ? 
-            prompt.substring(0, 30) + '...' : prompt;
-        
-        // Add dynamic content based on the prompt
-        let resultContent = `
-            <h2>Results for: ${prompt}</h2>
-            <p>Here's the information you requested:</p>
-        `;
-        
-        // Add some dynamic content based on the prompt type
-        if (prompt.toLowerCase().includes('weather')) {
-            resultContent += `
-                <div class="result-card">
-                    <h3>Weather Report</h3>
-                    <p>This is a detailed weather report with forecasts and additional climate data.</p>
-                </div>
-            `;
-        } else if (prompt.toLowerCase().includes('music') || prompt.toLowerCase().includes('play')) {
-            resultContent += `
-                <div class="result-card">
-                    <h3>Music Information</h3>
-                    <p>Track details, artist information, and recommendations based on your music preferences.</p>
-                </div>
-            `;
-        } else {
-            resultContent += `
-                <div class="result-card">
-                    <h3>AI Assistant Response</h3>
-                    <p>I've processed your request for "${prompt}" and compiled the relevant information.</p>
-                    <p>Click the share button to generate a shareable link to this result.</p>
-                </div>
-            `;
-        }
-        
-        document.querySelector('.result-content').innerHTML = resultContent;
-        
-        // Show the result view
-        resultView.style.display = 'flex';
-        
-        // Add close button functionality
-        document.querySelector('.close-button').addEventListener('click', () => {
-            resultView.style.display = 'none';
-        });
-        
-        // Add share button functionality
-        document.querySelector('.share-button').addEventListener('click', () => {
-            const dummyLink = `https://egg.app/share/${Math.random().toString(36).substring(2, 10)}`;
-            navigator.clipboard.writeText(dummyLink)
-                .then(() => alert(`Link copied to clipboard: ${dummyLink}`))
-                .catch(err => console.error('Failed to copy: ', err));
-        });
+  }
+  
+  // Update the time display
+  function updateTimeDisplay() {
+    const timeDisplay = document.getElementById('tray-time-display');
+    if (timeDisplay) {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      timeDisplay.textContent = timeString;
     }
-    
-    // Handle existing eggs in the interface
-    document.querySelectorAll('.egg').forEach(egg => {
-        egg.addEventListener('click', () => {
-            const summary = egg.querySelector('.egg-summary').textContent;
-            showResult(summary, egg.classList.contains('completed'));
-        });
-    });
+  }
+  
+  // Initialize the tray when the page loads
+  initializeTray();
 });

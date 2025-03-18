@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Window UI</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Mock implementation for demonstration */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .browser-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .message-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    
+    .message {
+      margin: 5px 0;
+      padding: 15px 20px;
+      border-radius: 25px;
+      max-width: 80%;
+      align-self: flex-start;
+    }
+    
+    .ai-message {
+      background-color: #000;
+      color: white;
+    }
+    
+    .user-message {
+      background-color: #f0f0f0;
+      align-self: flex-end;
+    }
+    
+    .time-marker {
+      color: #999;
+      text-align: center;
+      margin: 15px 0;
+    }
+    
+    .music-message {
+      background-color: #000;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+    }
+    
+    .album-art {
+      width: 40px;
+      height: 40px;
+      background-color: #333;
+      border-radius: 5px;
+    }
+    
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 25px 25px 0 0;
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+      padding: 20px;
+    }
+    
+    .drag-handle {
+      width: 50px;
+      height: 5px;
+      background-color: #ccc;
+      margin: 0 auto 15px;
+      border-radius: 5px;
+    }
+    
+    .input-area {
+      background-color: white;
+      border-radius: 25px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .input-placeholder {
+      flex: 1;
+      color: #999;
+    }
+    
+    .mic-button, .send-button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 10px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+    }
+    
+    .time-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #0f0;
+    }
+    
+    .eggs-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .egg {
+      width: 200px;
+      height: 150px;
+      border-radius: 15px;
+      padding: 15px;
+      color: black;
+    }
+    
+    .weather-egg {
+      background-color: #4cbeff;
+    }
+    
+    .music-egg {
+      background-color: #eee;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .egg-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .egg-subtitle {
+      opacity: 0.8;
+    }
+    
+    .expanded {
+      transform: translateY(-70%);
+    }
+  </style>
+</head>
+<body>
+  <div class="browser-container">
+    <div class="message-area">
+      <div class="time-marker">9:24 PM</div>
+      
+      <div class="message user-message">
+        play the cure
+      </div>
+      
+      <div class="message ai-message">
+        Here's The Cure. Now playing the first result.
+      </div>
+      
+      <div class="message music-message">
+        <div class="album-art"></div>
+        <span>The Cure – Alone</span>
+      </div>
+      
+      <div class="message music-message">
+        <div class="album-art"></div>
+        <span>The Cure – Just Like Heaven</span>
+      </div>
+      
+      <div class="message music-message">
+        <div class="album-art"></div>
+        <span>The Cure – Lost</span>
+      </div>
+      
+      <div class="time-marker">9:26 PM</div>
+      
+      <div class="message user-message">
+        what's the weather
+      </div>
+      
+      <div class="message ai-message">
+        Here's the weather in Kilauea, HI
+      </div>
+    </div>
+    
+    <div class="bottom-sheet" id="bottomSheet">
+      <div class="drag-handle" id="dragHandle"></div>
+      
+      <div class="input-area">
+        <div class="input-placeholder">ask for anything</div>
+        <div class="mic-button">🎤</div>
+        <div class="send-button">➤</div>
+      </div>
+      
+      <div class="user-info">
+        <div class="user-profile">
+          <div class="avatar"></div>
+          <div>Robert Andersen</div>
+        </div>
+        
+        <div class="time-status">
+          <div>9:28 PM</div>
+          <div class="status-indicator"></div>
+        </div>
+      </div>
+      
+      <div class="eggs-container">
+        <div class="egg weather-egg">
+          <div class="egg-title">KILAUEA, HI</div>
+          <div class="egg-subtitle">PARTLY CLOUDY</div>
+          <div style="font-size: 36px; margin-top: 30px;">30° F</div>
+        </div>
+        
+        <div class="egg music-egg">
+          <div class="egg-title">ALONE</div>
+          <div class="egg-subtitle">THE CURE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Simple implementation of the draggable bottom sheet
+    const bottomSheet = document.getElementById('bottomSheet');
+    const dragHandle = document.getElementById('dragHandle');
+    let isDragging = false;
+    let startY = 0;
+    let startHeight = 0;
+    let isExpanded = false;
+    
+    dragHandle.addEventListener('mousedown', startDrag);
+    dragHandle.addEventListener('touchstart', startDrag);
+    
+    function startDrag(e) {
+      isDragging = true;
+      startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', drag);
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+    }
+    
+    function drag(e) {
+      if (!isDragging) return;
+      
+      const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+      const deltaY = startY - currentY;
+      
+      if (deltaY > 50 && !isExpanded) {
+        bottomSheet.classList.add('expanded');
+        isExpanded = true;
+      } else if (deltaY < -50 && isExpanded) {
+        bottomSheet.classList.remove('expanded');
+        isExpanded = false;
+      }
+    }
+    
+    function endDrag() {
+      isDragging = false;
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('touchmove', drag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+    }
+    
+    // Toggle on click as well
+    dragHandle.addEventListener('click', () => {
+      if (isExpanded) {
+        bottomSheet.classList.remove('expanded');
+        isExpanded = false;
+      } else {
+        bottomSheet.classList.add('expanded');
+        isExpanded = true;
+      }
+    });
+  </script>
+</body>
+</html>

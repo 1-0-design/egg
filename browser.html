@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Window UI</title>
+  <link rel="stylesheet" href="/src/styles/egg/browser-window.css">
+  <link rel="stylesheet" href="/src/styles/egg/eggs-music.css">
+  <link rel="stylesheet" href="/src/styles/egg/eggs-weather-sunny.css">
+  <link rel="stylesheet" href="/src/styles/egg/icons.css">
+  <style>
+    /* Basic styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  
+  <!-- Import the React libraries -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Import our components -->
+  <script type="text/babel" data-type="module">
+    // Mock component implementations
+    
+    // IconsDots component
+    const IconsDots = () => {
+      return (
+        <div className="icons-dots">
+          <div className="content">
+            <div className="dots-container">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // IconsPause component
+    const IconsPause = ({ 
+      className, 
+      contentClassName, 
+      rectangleClassName, 
+      rectangleClassNameOverride 
+    }) => {
+      return (
+        <div className={`icons-pause ${className || ""}`}>
+          <div className={`content ${contentClassName || ""}`}>
+            <div className={`rectangle-pause ${rectangleClassName || ""}`}></div>
+            <div className={`rectangle-pause ${rectangleClassNameOverride || ""}`}></div>
+          </div>
+        </div>
+      );
+    };
+    
+    // IconsSun component
+    const IconsSun = ({ className }) => {
+      return (
+        <div className={`icons-sun ${className || ""}`}>
+          <div className="content">
+            <div className="sun-circle"></div>
+            <div className="sun-rays">
+              {[...Array(8)].map((_, index) => (
+                <div 
+                  key={index} 
+                  className="sun-ray" 
+                  style={{ transform: `rotate(${index * 45}deg)` }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // Play component
+    const Play = ({ className, color }) => {
+      return (
+        <div className={`play-icon ${className || ""}`}>
+          <div className="content">
+            <div 
+              className="play-triangle" 
+              style={{ borderLeftColor: color || "#000000" }}
+            ></div>
+          </div>
+        </div>
+      );
+    };
+    
+    // Mic component
+    const Mic = ({ className }) => {
+      return (
+        <div className={`icons-mic ${className || ""}`}>
+          <div className="content">
+            <div className="overlap-group">
+              <div className="mic-base"></div>
+              <div className="mic-stand"></div>
+              <div className="rectangle"></div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // EggsWeatherSunny component
+    const EggsWeatherSunny = ({ className }) => {
+      return (
+        <div className={`eggs-weather-sunny ${className || ""}`}>
+          <div className="frame">
+            <div className="frame-2">
+              <div className="text-wrapper">KILAUEA, HI</div>
+              <div className="text-wrapper-2">PARTLY CLOUDY</div>
+            </div>
+            <div className="more-button">
+              <IconsDots />
+            </div>
+          </div>
+          <div className="frame-3">
+            <div className="text-wrapper-3">30° F</div>
+            <IconsSun className="icons-sun-instance" />
+          </div>
+        </div>
+      );
+    };
+    
+    // EggsMusic component
+    const EggsMusic = ({ className }) => {
+      // Placeholder for album artwork
+      const placeholderImage = "https://via.placeholder.com/48";
+      
+      return (
+        <div className={`eggs-music ${className || ""}`}>
+          <div className="overlap-group">
+            <div className="frame">
+              <div className="frame-2">
+                <div className="text-wrapper">ALONE</div>
+                <div className="text-wrapper-2">THE CURE</div>
+              </div>
+              <div className="more-button">
+                <IconsDots />
+              </div>
+            </div>
+            <div className="frame-3">
+              <img
+                className="album-artwork"
+                alt="Album artwork"
+                src={placeholderImage}
+              />
+              <div className="timeline">
+                <div className="rectangle-5" />
+              </div>
+              <div className="play">
+                <IconsPause
+                  className="icons-pause-instance"
+                  contentClassName="design-component-instance-node"
+                  rectangleClassName="icons-pause-2"
+                  rectangleClassNameOverride="icons-pause-3"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // Main BrowserWindow component
+    const BrowserWindow = () => {
+      const [isExpanded, setIsExpanded] = React.useState(false);
+      const [isDragging, setIsDragging] = React.useState(false);
+      const [startY, setStartY] = React.useState(0);
+      const [currentHeight, setCurrentHeight] = React.useState(0);
+      const sheetRef = React.useRef(null);
+      const dragHandleRef = React.useRef(null);
+      
+      // Default collapsed height from CSS
+      const collapsedHeight = 200; // Adjust based on your design
+      const expandedHeight = window.innerHeight;
+      const expandThreshold = 100; // Pixels to drag before expanding
+      
+      // Toggle expansion on click
+      const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+      };
+      
+      // Handle drag start
+      const handleDragStart = (e) => {
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        setIsDragging(true);
+        setStartY(clientY);
+        setCurrentHeight(sheetRef.current.getBoundingClientRect().height);
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('touchmove', handleDrag);
+        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchend', handleDragEnd);
+      };
+      
+      // Handle drag movement
+      const handleDrag = (e) => {
+        if (!isDragging) return;
+        
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+        const deltaY = startY - clientY;
+        const newHeight = Math.max(collapsedHeight, Math.min(expandedHeight, currentHeight + deltaY));
+        
+        sheetRef.current.style.height = `${newHeight}px`;
+        
+        // Update expanded state based on drag position
+        if (newHeight > collapsedHeight + expandThreshold && !isExpanded) {
+          setIsExpanded(true);
+        } else if (newHeight < collapsedHeight + expandThreshold && isExpanded) {
+          setIsExpanded(false);
+        }
+      };
+      
+      // Handle drag end
+      const handleDragEnd = () => {
+        setIsDragging(false);
+        // Snap to either expanded or collapsed
+        if (isExpanded) {
+          sheetRef.current.style.height = `${expandedHeight}px`;
+        } else {
+          sheetRef.current.style.height = `${collapsedHeight}px`;
+        }
+        
+        document.removeEventListener('mousemove', handleDrag);
+        document.removeEventListener('touchmove', handleDrag);
+        document.removeEventListener('mouseup', handleDragEnd);
+        document.removeEventListener('touchend', handleDragEnd);
+      };
+      
+      // Update height on window resize
+      React.useEffect(() => {
+        const handleResize = () => {
+          if (isExpanded) {
+            sheetRef.current.style.height = `${window.innerHeight}px`;
+          }
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [isExpanded]);
+      
+      // Sample chat messages for the mockup
+      const messages = [
+        { type: 'time', content: '9:24 PM' },
+        { type: 'user', content: 'play the cure' },
+        { type: 'ai', content: "Here's The Cure. Now playing the first result." },
+        { type: 'music', title: 'The Cure – Alone', playing: true },
+        { type: 'music', title: 'The Cure – Just Like Heaven', playing: false },
+        { type: 'music', title: 'The Cure – Lost', playing: false },
+        { type: 'time', content: '9:26 PM' },
+        { type: 'user', content: "what's the weather" },
+        { type: 'ai', content: "Here's the weather in Kilauea, HI" }
+      ];
+      
+      // Placeholder user image
+      const userImage = "https://via.placeholder.com/24";
+      
+      return (
+        <div className="browser-window">
+          <div className="frame-wrapper">
+            <div className="frame-7">
+              <div className="frame-8">
+                {messages.map((message, index) => (
+                  <React.Fragment key={index}>
+                    {message.type === 'time' && (
+                      <div className="text-wrapper-6">{message.content}</div>
+                    )}
+                    
+                    {message.type === 'user' && (
+                      <div className="div-wrapper">
+                        <div className="frame-10">
+                          <div className="text-wrapper-8">{message.content}</div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {message.type === 'ai' && (
+                      <div className="div-wrapper">
+                        <div className="frame-9">
+                          <p className="text-wrapper-7">{message.content}</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {message.type === 'music' && (
+                      <div className="div-wrapper">
+                        <div className="frame-11">
+                          <img className="img" alt="Album artwork" src={userImage} />
+                          <p className="text-wrapper-7">{message.title}</p>
+                          {message.playing ? (
+                            <IconsPause
+                              className="icons-pause-4"
+                              rectangleClassName="icons-pause-5"
+                              rectangleClassNameOverride="icons-pause-5"
+                            />
+                          ) : (
+                            <Play className="icons-play" color="white" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+              
+              <div 
+                ref={sheetRef}
+                className={`frame-13 ${isExpanded ? 'expanded' : ''} ${isDragging ? 'dragging' : ''}`}
+                style={{ 
+                  height: isExpanded ? expandedHeight : collapsedHeight 
+                }}
+              >
+                <div className="frame-14">
+                  <div className="text-wrapper-9">ask for anything</div>
+                  <div className="more-button-wrapper">
+                    <div className="icons-mic-wrapper">
+                      <Mic className="icons-mic" />
+                    </div>
+                  </div>
+                  <button className="button">
+                    <button className="more-button-2">
+                      <div className="text-wrapper-10">send</div>
+                    </button>
+                  </button>
+                </div>
+                
+                <div className="frame-15">
+                  <div className="frame-16">
+                    <img className="image" alt="User" src={userImage} />
+                    <div className="text-wrapper-11">Robert Andersen</div>
+                  </div>
+                  
+                  <div 
+                    className="rectangle-wrapper" 
+                    ref={dragHandleRef}
+                    onClick={toggleExpand}
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
+                  >
+                    <div className="rectangle-6" />
+                  </div>
+                  
+                  <div className="frame-16">
+                    <div className="text-wrapper-12">9:28 PM</div>
+                    <div className="ellipse" />
+                  </div>
+                </div>
+                
+                <div className="frame-17">
+                  <EggsWeatherSunny />
+                  <EggsMusic className="eggs-music-instance" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // Render the BrowserWindow component
+    ReactDOM.render(
+      <BrowserWindow />,
+      document.getElementById('app')
+    );
+  </script>
+</body>
+</html>

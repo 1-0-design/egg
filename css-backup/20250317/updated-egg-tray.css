@@ -1,0 +1,477 @@
+/* Updated Egg Tray Styles based on Figma design */
+
+.egg-tray-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none; /* Allow clicks to pass through to elements behind */
+  transition: transform 0.3s ease;
+}
+
+.egg-tray-container.expanded {
+  transform: translateY(-200px);
+}
+
+.egg-tray {
+  -webkit-backdrop-filter: blur(50px) brightness(100%);
+  backdrop-filter: blur(50px) brightness(100%);
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 60px 60px 0px 0px;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.25), 0px 4px 50px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 30px;
+  width: 100%;
+  pointer-events: auto; /* Re-enable pointer events for the tray itself */
+}
+
+/* Input field styling */
+.egg-tray-input {
+  align-items: center;
+  align-self: stretch;
+  background-color: #ffffff;
+  border-radius: 100px;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.25), 0px 5px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  gap: 10px;
+  height: 60px;
+  justify-content: center;
+  padding: 23px 6px 23px 30px;
+  position: relative;
+  width: 100%;
+}
+
+.egg-tray-input input {
+  align-self: stretch;
+  background: transparent;
+  border: none;
+  color: #000000;
+  flex: 1;
+  font-family: "Cash Sans-Medium", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  outline: none;
+  position: relative;
+  white-space: nowrap;
+}
+
+.egg-tray-input input::placeholder {
+  color: #00000080;
+}
+
+/* Mic button */
+.mic-button {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 100px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  margin-bottom: -17px;
+  margin-top: -17px;
+  position: relative;
+  cursor: pointer;
+}
+
+.mic-button-inner {
+  align-items: center;
+  border-radius: 24px;
+  display: flex;
+  gap: 10px;
+  height: 48px;
+  padding: 12px;
+  position: relative;
+  width: 48px;
+}
+
+/* Send button */
+.send-button {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 100px;
+  display: flex;
+  gap: 6px;
+  margin-bottom: -17px;
+  margin-top: -17px;
+  position: relative;
+  width: 80px;
+  cursor: pointer;
+}
+
+.send-button-inner {
+  align-items: center;
+  border-radius: 24px;
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  height: 48px;
+  padding: 12px;
+  position: relative;
+  justify-content: center;
+}
+
+.send-button-inner span {
+  color: #000000;
+  flex: 1;
+  font-family: "Cash Sans-Medium", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  text-align: center;
+}
+
+/* User info bar */
+.user-info-bar {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  padding: 0px 30px;
+  position: relative;
+  width: 100%;
+}
+
+.user-profile {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 15px;
+  position: relative;
+}
+
+.user-avatar {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+}
+
+.user-name {
+  color: #000000;
+  flex: 1;
+  font-family: "Cash Sans-Semibold", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  height: 48px;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+}
+
+.drag-handle-container {
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.drag-handle {
+  background-color: #000000;
+  border-radius: 7px;
+  height: 8px;
+  position: relative;
+  top: 20px;
+  width: 50px;
+  cursor: grab;
+}
+
+.time-status {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 15px;
+  position: relative;
+  justify-content: flex-end;
+}
+
+.current-time {
+  color: #000000;
+  flex: 1;
+  font-family: "Cash Sans-Semibold", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  height: 48px;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+  text-align: right;
+}
+
+.status-indicator {
+  background-color: #0fea21;
+  border-radius: 12px;
+  height: 24px;
+  position: relative;
+  width: 24px;
+}
+
+/* Eggs container in tray */
+.egg-tray-items {
+  align-items: center;
+  display: inline-flex;
+  gap: 30px;
+  position: relative;
+  justify-content: center;
+}
+
+/* Weather Egg Styling */
+.eggs-weather-sunny {
+  background-color: #4cbeff;
+  border-radius: 30px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  width: 320px;
+}
+
+.eggs-weather-sunny .weather-header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  left: 30px;
+  position: absolute;
+  top: 30px;
+  width: 260px;
+}
+
+.eggs-weather-sunny .weather-info {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.eggs-weather-sunny .location {
+  color: #000000;
+  font-family: "Cash Sans-Bold", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+}
+
+.eggs-weather-sunny .condition {
+  color: #000000;
+  font-family: "Cash Sans-Medium", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+}
+
+.eggs-weather-sunny .more-button {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  display: flex;
+  gap: 10px;
+  height: 48px;
+  padding: 12px;
+  position: relative;
+  width: 48px;
+}
+
+.eggs-weather-sunny .weather-details {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  left: 30px;
+  position: absolute;
+  top: 122px;
+  width: 260px;
+}
+
+.eggs-weather-sunny .temperature {
+  color: #000000;
+  font-family: "Cash Sans-Medium", Helvetica, sans-serif;
+  font-size: 64px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+  white-space: nowrap;
+  width: 148px;
+}
+
+/* Music Egg Styling */
+.eggs-music {
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 30px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
+  height: 200px;
+  overflow: hidden;
+  width: 320px;
+  position: relative;
+}
+
+.eggs-music .music-content {
+  backdrop-filter: blur(50px) brightness(100%);
+  -webkit-backdrop-filter: blur(50px) brightness(100%);
+  background-color: rgba(255, 255, 255, 0.3);
+  height: 100%;
+  position: relative;
+}
+
+.eggs-music .music-header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  left: 30px;
+  position: absolute;
+  top: 30px;
+  width: 260px;
+}
+
+.eggs-music .track-info {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.eggs-music .track-title {
+  color: #000000;
+  font-family: "Cash Sans-Bold", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+}
+
+.eggs-music .artist-name {
+  color: #000000;
+  font-family: "Cash Sans-Medium", Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+}
+
+.eggs-music .music-controls {
+  align-items: center;
+  display: flex;
+  gap: 30px;
+  left: 30px;
+  position: absolute;
+  top: 122px;
+  width: 260px;
+}
+
+.eggs-music .album-artwork {
+  height: 48px;
+  object-fit: cover;
+  position: relative;
+  width: 48px;
+  border-radius: 4px;
+}
+
+.eggs-music .timeline {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  flex: 1;
+  height: 6px;
+  position: relative;
+}
+
+.eggs-music .progress {
+  background-color: #000000;
+  border-radius: 3px;
+  height: 6px;
+  width: 18px;
+}
+
+.eggs-music .play-button {
+  align-items: center;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Icons for play/pause */
+.play-icon, .pause-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-icon {
+  position: relative;
+}
+
+.pause-bar {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background-color: #000;
+  border-radius: 1.5px;
+}
+
+.pause-bar:first-child {
+  left: 8px;
+}
+
+.pause-bar:last-child {
+  right: 8px;
+}
+
+/* Chat message styling */
+.chat-message {
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 80%;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  background-color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.assistant-message {
+  background-color: #000;
+  color: #fff;
+  align-self: flex-start;
+}
+
+.time-marker {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  margin: 15px 0;
+}

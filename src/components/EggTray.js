@@ -3,12 +3,42 @@
 
 class EggTray {
   constructor(containerId) {
-    this.container = document.getElementById(containerId);
-    if (!this.container) {
+    // Find or create the container
+    let container = document.getElementById(containerId);
+    
+    if (!container) {
       console.error('Egg tray container not found:', containerId);
       return;
     }
-
+    
+    // Create a tray container with proper positioning if it doesn't exist yet
+    let trayContainer = container.querySelector('.egg-tray-container');
+    if (!trayContainer) {
+      // Create a container for proper positioning
+      trayContainer = document.createElement('div');
+      trayContainer.className = 'egg-tray-container';
+      
+      // Move the original container's contents to the new tray
+      const tray = document.createElement('div');
+      tray.className = 'egg-tray';
+      tray.id = container.id + '-tray';
+      
+      // Move any existing children to the new tray
+      while (container.firstChild) {
+        tray.appendChild(container.firstChild);
+      }
+      
+      trayContainer.appendChild(tray);
+      container.appendChild(trayContainer);
+      
+      // Update the container reference to the actual tray
+      container = tray;
+    } else {
+      // If trayContainer exists, make sure we're using the actual tray
+      container = container.querySelector('.egg-tray') || container;
+    }
+    
+    this.container = container;
     this.eggs = new Map(); // Store active eggs
     this.setupDragAndDrop();
     this.addStyles();

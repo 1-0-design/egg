@@ -1,0 +1,54 @@
+<!-- Updated egg-tray.html template based on Figma design -->
+<div class="egg-tray-container">
+  <div class="egg-tray">
+    <!-- Input area -->
+    <div class="egg-tray-input">
+      <input type="text" placeholder="ask for anything" id="egg-tray-text-input">
+      
+      <!-- Mic button -->
+      <div class="mic-button">
+        <div class="mic-button-inner">
+          <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Send button -->
+      <div class="send-button">
+        <div class="send-button-inner">
+          <span>send</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- User info bar -->
+    <div class="user-info-bar">
+      <!-- User profile -->
+      <div class="user-profile">
+        <img class="user-avatar" id="user-avatar" src="" alt="User">
+        <div class="user-name" id="user-name">Guest User</div>
+      </div>
+      
+      <!-- Drag handle to expand/collapse -->
+      <div class="drag-handle-container">
+        <div class="drag-handle" id="drag-handle"></div>
+      </div>
+      
+      <!-- Time and status -->
+      <div class="time-status">
+        <div class="current-time" id="current-time">00:00</div>
+        <div class="status-indicator"></div>
+      </div>
+    </div>
+    
+    <!-- Eggs container -->
+    <div class="egg-tray-items" id="egg-tray-items">
+      <!-- Weather egg example - will be generated dynamically -->
+      <!-- Music egg example - will be generated dynamically -->
+    </div>
+  </div>
+</div>

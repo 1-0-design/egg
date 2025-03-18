@@ -48,6 +48,11 @@
           margin: 0 auto;
         }
 
+        /* Chat container */
+        :root {
+          --egg-tray-height: 200px;
+        }
+
         .content .chat {
           align-items: center;
           align-self: stretch;
@@ -57,7 +62,8 @@
           flex-grow: 1;
           gap: 15px;
           overflow-y: scroll;
-          padding: 30px 30px 150px;
+          padding: 30px 30px calc(30px + var(--egg-tray-height));
+          scroll-padding-bottom: var(--egg-tray-height);
           position: relative;
           width: 100%;
         }
@@ -93,6 +99,7 @@
           justify-content: flex-end;
         }
 
+        /* Message bubbles */
         .message-bubble {
           align-items: center;
           border-radius: 100px;
@@ -102,6 +109,25 @@
           height: 60px;
           padding: 23px 30px;
           position: relative;
+        }
+
+        /* Song suggestion bubbles (special styling) */
+        .message-bubble.song-suggestion {
+          padding: 23px 18px 23px 6px;
+        }
+
+        .message-bubble.song-suggestion .suggestion-image {
+          height: 48px;
+          width: 48px;
+          margin: -17px 0;
+          object-fit: cover;
+          border-radius: 24px; /* Make it circular */
+        }
+
+        .message-bubble.song-suggestion .icons-play {
+          height: 24px;
+          width: 24px;
+          cursor: pointer;
         }
 
         .message-bubble.assistant {
@@ -256,7 +282,7 @@
           gap: 10px;
           height: 60px;
           justify-content: center;
-          padding: 23px 6px 23px 30px;
+          padding: 0 6px 0 30px;
           position: relative;
           width: 100%;
         }
@@ -272,6 +298,16 @@
           line-height: normal;
           position: relative;
           white-space: nowrap;
+          background: none;
+          border: none;
+          outline: none;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+        }
+
+        .egg-tray .input-text::placeholder {
+          color: rgba(0, 0, 0, 0.5);
         }
 
         .egg-tray .button-wrapper {
@@ -384,16 +420,6 @@
           text-align: right;
         }
 
-        .egg-tray .model {
-          color: #000000;
-          font-family: "Cash Sans-Semibold", Helvetica;
-          font-size: 18px;
-          font-weight: 400;
-          letter-spacing: 0;
-          line-height: normal;
-          text-align: right;
-          white-space: nowrap;
-        }
 
         .egg-tray .status-indicator {
           background-color: #0fea21;
@@ -402,25 +428,73 @@
           width: 24px;
         }
 
-        .egg-collection {
-          align-items: center;
+        /* Chat inline egg responses */
+        .chat .egg-response {
           display: flex;
-          gap: 30px;
-          position: relative;
           width: 100%;
-          justify-content: center;
+          justify-content: flex-start;
+          margin: 15px 0;
         }
 
-        /* Music egg styles */
+        /* Egg tray collection */
+        .egg-tray .egg-collection {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 30px;
+          width: 100%;
+          max-width: 2500px;
+          margin: 0 auto;
+        }
+
+        /* Tray egg container */
+        .tray-egg {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
         .eggs-music {
-          background-image: url(assets/music.svg);
-          background-position: 50% 50%;
+          background-color: rgba(0, 0, 0, 0.1);
+          background-position: center;
           background-size: cover;
           border-radius: 30px;
           box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
           height: 200px;
           overflow: hidden;
           width: 320px;
+          position: relative;
+        }
+
+        .eggs-music::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: inherit;
+          background-position: inherit;
+          background-size: inherit;
+          filter: blur(50px);
+          z-index: 1;
+        }
+
+        .eggs-music::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(255, 255, 255, 0.3);
+          z-index: 2;
+        }
+
+        .eggs-music .overlap-group {
+          position: relative;
+          height: 100%;
+          z-index: 3;
         }
 
         .eggs-music .overlap-group {
@@ -537,63 +611,68 @@
           position: relative;
         }
 
-        .eggs-music .icons-pause {
-          height: 24px;
-          width: 24px;
+        .song-suggestion {
+          align-items: center;
+          background-color: #000000;
+          border-radius: 100px;
+          display: flex;
+          gap: 10px;
+          height: 60px;
+          justify-content: center;
+          padding: 23px 18px 23px 6px;
+          position: relative;
+          width: 341px;
+        }
+
+        .song-suggestion .suggestion-image {
+          height: 48px;
+          margin-bottom: -17.00px;
+          margin-top: -17.00px;
+          object-fit: cover;
+          position: relative;
+          width: 48px;
+        }
+
+        .song-suggestion .suggestion-text {
+          color: #ffffff;
+          flex: 1;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -0.50px;
           position: relative;
         }
 
+        .song-suggestion .icons-play {
+          flex: 0 0 auto;
+          margin-bottom: -5.00px;
+          margin-top: -5.00px;
+          position: relative;
+          width: 24px;
+          height: 24px;
+        }
+
+        .suggestions-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          width: 100%;
+          padding: 15px 0;
+        }
     </style>
 </head>
 <body>
     <div class="content">
       <div class="chat">
         <div class="text-wrapper">9:24 PM</div>
-
-        <!-- Welcome message -->
-        <div class="frame-wrapper">
-          <div class="message-bubble assistant">
-            <div class="text">Welcome back, Robert</div>
-          </div>
-        </div>
-
-        <!-- User message -->
-        <div class="frame-wrapper right">
-          <div class="message-bubble user">
-            <div class="text">what's the local weather</div>
-          </div>
-        </div>
-
-        <!-- Assistant response -->
-        <div class="frame-wrapper">
-          <div class="message-bubble assistant">
-            <div class="text">Here you go</div>
-          </div>
-        </div>
-
-        <!-- Weather egg -->
-        <div class="egg-response">
-          <div class="weather-egg">
-            <div class="frame">
-              <div class="location-info">
-                <div class="location">KILAUEA, HI</div>
-                <div class="condition">PARTLY CLOUDY</div>
-              </div>
-              <div class="more-button">
-                <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
-              </div>
-            </div>
-            <div class="frame-2">
-              <div class="temperature">30° F</div>
-              <img class="icons-sun" src="assets/icons/sun.svg" alt="Sun">
-            </div>
-          </div>
-        </div>
+        <!-- Messages will be added here dynamically -->
       </div>
 
       <div class="egg-tray">
         <div class="input-frame">
-          <div class="input-text">ask for anything</div>
+          <input type="text" class="input-text" placeholder="ask for anything">
 
           <div class="button-wrapper">
             <div class="mic-button">
@@ -601,15 +680,15 @@
             </div>
           </div>
 
-          <button class="send-button">
+          <button class="send-button" onclick="handleSend()">
             <div class="text">send</div>
           </button>
         </div>
 
         <div class="status-bar">
           <div class="user-info">
-            <img class="user-avatar" src="assets/images/robert_avatar.jpg" alt="Robert Andersen">
-            <div class="user-name">Robert Andersen</div>
+            <img class="user-avatar" src="assets/robert_avatar.jpg" alt="rsa">
+            <div class="user-name">rsa</div>
           </div>
 
           <div class="divider">
@@ -618,56 +697,406 @@
 
           <div class="status-info">
             <div class="time">9:28 PM</div>
-            <div class="model">Claude 3.7</div>
             <div class="status-indicator"></div>
           </div>
         </div>
 
         <div class="egg-collection">
+          <!-- Eggs will be added here dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // State management
+      const state = {
+        messages: [],
+        eggs: [],
+        isProcessing: false,
+        currentMusic: null
+      };
+
+      // Music API functions
+      async function searchMusicPreviews(term, limit = 10) {
+        try {
+          console.log(`Searching for music: ${term}`);
+          const timestamp = new Date().getTime();
+          const apiUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&limit=${limit}&t=${timestamp}`;
+          console.log(`API URL: ${apiUrl}`);
+          
+          const response = await fetch(apiUrl, { 
+            mode: 'cors',
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`iTunes API error: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          console.log('iTunes API response:', data);
+          
+          return data.results.map(item => {
+            let albumArt = item.artworkUrl100 || null;
+            if (albumArt) {
+              albumArt = albumArt.replace('100x100bb', '600x600bb');
+            }
+            
+            return {
+              id: item.trackId,
+              title: item.trackName || 'Unknown Title',
+              artist: item.artistName || 'Unknown Artist',
+              album: item.collectionName || 'Unknown Album',
+              albumArt: albumArt,
+              previewUrl: item.previewUrl
+            };
+          });
+        } catch (error) {
+          console.error('Error searching music previews:', error);
+          return [];
+        }
+      }
+
+      // Weather functions - we'll expand this with real API
+      async function getWeather(location = "Kilauea, HI") {
+        // Placeholder weather data - we'll replace with actual API
+        return {
+          location: "KILAUEA, HI",
+          condition: "PARTLY CLOUDY",
+          temperature: "30°F",
+          icon: "sun" // we'll map this to our icons
+        };
+      }
+
+      // Egg creation functions
+      function createWeatherEgg(weatherData, isInTray = false) {
+        const template = `
           <div class="weather-egg">
             <div class="frame">
               <div class="location-info">
-                <div class="location">KILAUEA, HI</div>
-                <div class="condition">PARTLY CLOUDY</div>
+                <div class="location">${weatherData.location}</div>
+                <div class="condition">${weatherData.condition}</div>
               </div>
               <div class="more-button">
                 <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
               </div>
             </div>
             <div class="frame-2">
-              <div class="temperature">30° F</div>
+              <div class="temperature">${weatherData.temperature}</div>
               <img class="icons-sun" src="assets/icons/sun.svg" alt="Sun">
             </div>
           </div>
+        `;
 
-          <div class="eggs-music">
+        const wrapper = document.createElement('div');
+        wrapper.className = isInTray ? 'tray-egg' : 'egg-response';
+        wrapper.innerHTML = template;
+        return wrapper;
+      }
+
+      function createMusicEgg(musicData, isInTray = false) {
+        const template = `
+          <div class="eggs-music" style="background-image: url('${musicData.albumArt}')">
             <div class="overlap-group">
               <div class="frame">
                 <div class="info">
-                  <div class="song-title">ALONE</div>
-                  <div class="artist">THE CURE</div>
+                  <div class="song-title">${musicData.title.toUpperCase()}</div>
+                  <div class="artist">${musicData.artist.toUpperCase()}</div>
                 </div>
                 <div class="more-button">
                   <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
                 </div>
               </div>
               <div class="frame-2">
-                <img class="album-artwork" src="assets/alone-album.jpg" alt="Album artwork">
+                <img class="album-artwork" src="${musicData.albumArt}" alt="Album artwork">
                 <div class="timeline">
                   <div class="rectangle"></div>
                 </div>
-                <div class="play">
-                  <img class="icons-pause" src="assets/icons/pause.svg" alt="Pause">
+                <div class="play" onclick="toggleMusic('${musicData.previewUrl}', this)">
+                  <img class="icons-pause" src="assets/icons/play.svg" alt="Play">
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        `;
 
-    <script>
-      // Update the time display
+        const wrapper = document.createElement('div');
+        wrapper.className = isInTray ? 'tray-egg' : 'egg-response';
+        wrapper.innerHTML = template;
+
+        // Add suggestions as message bubbles if not in tray
+        if (!isInTray) {
+          // Create suggestions for similar songs
+          const suggestions = [
+            {
+              title: "The Cure – Just Like Heaven",
+              image: musicData.albumArt,
+              previewUrl: musicData.previewUrl
+            },
+            {
+              title: "The Cure – Friday I'm in Love",
+              image: musicData.albumArt,
+              previewUrl: musicData.previewUrl
+            }
+          ];
+          
+          // Add suggestions after a short delay
+          setTimeout(() => {
+            addSuggestions(suggestions);
+          }, 500);
+
+          // Start playing automatically
+          setTimeout(() => {
+            const playButton = wrapper.querySelector('.play');
+            toggleMusic(musicData.previewUrl, playButton);
+          }, 100);
+        }
+
+        return wrapper;
+      }
+
+      // Audio handling
+      let audioPlayer = null;
+      let currentPlayButton = null;
+
+      function toggleMusic(previewUrl, playButton) {
+        console.log('Toggling music:', previewUrl);
+        
+        // Update all play buttons with the same previewUrl
+        function updateAllButtons(url, isPaused) {
+          const allButtons = document.querySelectorAll('.play, .song-suggestion .icons-play');
+          allButtons.forEach(button => {
+            if (button.closest('[onclick*="' + url + '"]')) {
+              const icon = button.querySelector('img');
+              icon.src = isPaused ? 'assets/icons/play.svg' : 'assets/icons/pause.svg';
+            }
+          });
+        }
+        
+        if (audioPlayer && audioPlayer.src === previewUrl) {
+          if (audioPlayer.paused) {
+            console.log('Resuming playback');
+            audioPlayer.volume = 1.0;
+            audioPlayer.play()
+              .then(() => {
+                updateAllButtons(previewUrl, false);
+                console.log('Playback resumed successfully');
+              })
+              .catch(error => {
+                console.error('Error resuming playback:', error);
+                updateAllButtons(previewUrl, true);
+              });
+          } else {
+            console.log('Pausing playback');
+            audioPlayer.pause();
+            updateAllButtons(previewUrl, true);
+          }
+        } else {
+          console.log('Starting new track');
+          if (audioPlayer) {
+            const oldUrl = audioPlayer.src;
+            audioPlayer.pause();
+            updateAllButtons(oldUrl, true);
+          }
+          
+          audioPlayer = new Audio(previewUrl);
+          audioPlayer.volume = 1.0;
+          
+          audioPlayer.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            updateAllButtons(previewUrl, true);
+          });
+          
+          audioPlayer.addEventListener('ended', () => {
+            updateAllButtons(previewUrl, true);
+          });
+          
+          audioPlayer.play()
+            .then(() => {
+              updateAllButtons(previewUrl, false);
+              console.log('Playback started successfully');
+            })
+            .catch(error => {
+              console.error('Error starting playback:', error);
+              updateAllButtons(previewUrl, true);
+            });
+        }
+      }
+
+      // Egg management
+      function addEgg(egg, eggData) {
+        state.eggs.push({ type: egg, data: eggData });
+        
+        const chatContainer = document.querySelector('.chat');
+        const eggElement = egg === 'weather' 
+          ? createWeatherEgg(eggData)
+          : createMusicEgg(eggData);
+        
+        chatContainer.appendChild(eggElement);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // Also update the egg tray
+        updateEggTray();
+      }
+
+      function updateEggTray() {
+        const eggCollection = document.querySelector('.egg-collection');
+        eggCollection.innerHTML = '';
+        
+        // Add the most recent eggs (limit to 2-3)
+        state.eggs.slice(-2).forEach(egg => {
+          const eggElement = egg.type === 'weather'
+            ? createWeatherEgg(egg.data, true)  // Pass true for isInTray
+            : createMusicEgg(egg.data, true);   // Pass true for isInTray
+          eggCollection.appendChild(eggElement);
+        });
+      }
+
+      // Scroll handling
+      function scrollToBottom(container) {
+        const scrollHeight = container.scrollHeight;
+        const height = container.clientHeight;
+        const maxScrollTop = scrollHeight - height;
+        container.scrollTop = maxScrollTop;
+      }
+
+      // Scroll handling
+      function scrollToLatest() {
+        const chat = document.querySelector('.chat');
+        const eggTray = document.querySelector('.egg-tray');
+        
+        // Calculate scroll position that shows the latest message just above the egg tray
+        const scrollTarget = chat.scrollHeight - chat.clientHeight + (eggTray.offsetHeight / 2);
+        chat.scrollTop = scrollTarget;
+      }
+
+      // Message handling
+      function createMessageElement(text, isUser = false) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `frame-wrapper${isUser ? ' right' : ''}`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = `message-bubble${isUser ? ' user' : ' assistant'}`;
+        
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text';
+        textDiv.textContent = text;
+        
+        bubble.appendChild(textDiv);
+        wrapper.appendChild(bubble);
+        return wrapper;
+      }
+
+      function createMessageSuggestion(suggestion) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'frame-wrapper';
+        
+        wrapper.innerHTML = `
+          <div class="message-bubble assistant song-suggestion">
+            <img class="suggestion-image" src="${suggestion.image}" alt="Album art">
+            <div class="suggestion-text">${suggestion.title}</div>
+            <img class="icons-play" src="assets/icons/play.svg" alt="Play" onclick="toggleMusic('${suggestion.previewUrl}', this)">
+          </div>
+        `;
+        
+        return wrapper;
+      }
+
+      function addSuggestions(suggestions) {
+        const chatContainer = document.querySelector('.chat');
+        suggestions.forEach(suggestion => {
+          const suggestionElement = createMessageSuggestion(suggestion);
+          chatContainer.appendChild(suggestionElement);
+        });
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      function addMessage(text, isUser = false) {
+        const message = {
+          text,
+          isUser,
+          timestamp: new Date()
+        };
+        
+        state.messages.push(message);
+        
+        const chatContainer = document.querySelector('.chat');
+        const messageElement = createMessageElement(text, isUser);
+        
+        // Insert before the last egg response if it exists
+        const lastEggResponse = chatContainer.querySelector('.egg-response');
+        if (lastEggResponse) {
+          lastEggResponse.parentNode.insertBefore(messageElement, lastEggResponse);
+        } else {
+          chatContainer.appendChild(messageElement);
+        }
+        
+        // Scroll to latest
+        setTimeout(scrollToLatest, 100);
+      }
+
+      // Input handling
+      function handleSend() {
+        const input = document.querySelector('.input-text');
+        const text = input.value.trim();
+        
+        if (text && !state.isProcessing) {
+          // Clear input
+          input.value = '';
+          
+          // Add user message
+          addMessage(text, true);
+          
+          // Set processing state
+          state.isProcessing = true;
+          
+          // Process the message
+          processMessage(text);
+        }
+      }
+
+      // Message processing
+      async function processMessage(text) {
+        const lowerText = text.toLowerCase();
+        
+        try {
+          if (lowerText.includes('weather')) {
+            addMessage("Here's the current weather");
+            const weatherData = await getWeather();
+            addEgg('weather', weatherData);
+          } 
+          else if (lowerText.includes('play') || lowerText.includes('music')) {
+            addMessage("Let me find that music for you");
+            const searchTerm = text.replace(/play|music/gi, '').trim();
+            const musicResults = await searchMusicPreviews(searchTerm);
+            
+            if (musicResults.length > 0) {
+              addEgg('music', musicResults[0]);
+            } else {
+              addMessage("Sorry, I couldn't find that music");
+            }
+          } 
+          else {
+            addMessage("I'm working on understanding that request");
+          }
+        } catch (error) {
+          console.error('Error processing message:', error);
+          addMessage("Sorry, there was an error processing your request");
+        }
+        
+        state.isProcessing = false;
+      }
+
+      // Enter key handling
+      document.querySelector('.input-text').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleSend();
+        }
+      });
+
+      // Time display
       function updateTime() {
         const now = new Date();
         const hours = now.getHours();
@@ -683,11 +1112,53 @@
         });
       }
       
-      // Update time on page load
-      updateTime();
+      // Initialize
+      function scrollToBottom(container) {
+        const scrollHeight = container.scrollHeight;
+        const height = container.clientHeight;
+        const maxScrollTop = scrollHeight - height;
+        container.scrollTop = maxScrollTop;
+      }
+
+      // Initialization and setup
+      function init() {
+        // Update time initially and set interval
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // Clear any example messages if needed
+        const chat = document.querySelector('.chat');
+        const timeWrapper = chat.querySelector('.text-wrapper');
+        chat.innerHTML = '';
+        chat.appendChild(timeWrapper);
+        
+        // Add welcome message
+        addMessage("Welcome back, rsa");
+
+        // Set up scroll padding based on egg tray height
+        const updateEggTrayHeight = () => {
+          const eggTray = document.querySelector('.egg-tray');
+          const height = eggTray.offsetHeight;
+          document.documentElement.style.setProperty('--egg-tray-height', `${height}px`);
+        };
+
+        // Initial height calculation
+        updateEggTrayHeight();
+
+        // Update height on window resize
+        window.addEventListener('resize', updateEggTrayHeight);
+
+        // Ensure proper scroll behavior
+        const chatContainer = document.querySelector('.chat');
+        chatContainer.addEventListener('scroll', () => {
+          if (chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 10) {
+            scrollToBottom(chatContainer);
+          }
+        });
+      }
       
-      // Update time every minute
-      setInterval(updateTime, 60000);
+      // Start the app
+      init();
     </script>
 </body>
 </html>

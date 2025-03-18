@@ -1,0 +1,68 @@
+.empty-state-helper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  margin: 20px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.empty-state-suggestions {
+  max-width: 500px;
+}
+
+.empty-state-suggestions p {
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.empty-state-suggestions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.empty-state-suggestions li {
+  margin: 10px 0;
+  padding: 12px 20px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.empty-state-suggestions li:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.empty-egg {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 30px;
+  height: 200px;
+  padding: 30px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.weather-empty-egg {
+  background-color: rgba(76, 190, 255, 0.2);
+}
+
+.music-empty-egg {
+  background-color: rgba(200, 200, 225, 0.3);
+  background-image: linear-gradient(135deg, rgba(245, 247, 250, 0.3) 0%, rgba(195, 207, 226, 0.3) 100%);
+}
+
+.empty-egg p {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  max-width: 240px;
+}

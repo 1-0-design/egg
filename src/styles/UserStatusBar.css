@@ -1,0 +1,79 @@
+.user-status-bar {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  padding: 0px 30px;
+  position: relative;
+  width: 100%;
+}
+
+.user-info {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+  position: relative;
+  width: 33.3%; /* Equal width for all three columns */
+}
+
+.status-info {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+  position: relative;
+  width: 33.3%; /* Equal width for all three columns */
+  justify-content: flex-end;
+}
+
+.user-avatar {
+  height: 24px;
+  object-fit: cover;
+  position: relative;
+  width: 24px;
+}
+
+.user-name {
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1.00px;
+  position: relative;
+}
+
+.drag-handle-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  width: 33.3%; /* Equal width for all three columns */
+}
+
+.drag-handle {
+  background-color: #000000;
+  border-radius: 7px;
+  height: 8px;
+  width: 50px;
+}
+
+.current-time {
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1.00px;
+  position: relative;
+  text-align: right;
+}
+
+.status-indicator {
+  background-color: #0fea21;
+  border-radius: 12px;
+  height: 24px;
+  position: relative;
+  width: 24px;
+}

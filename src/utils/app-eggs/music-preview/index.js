@@ -7,11 +7,12 @@ const musicPreviewEgg = {
   description: "Listen to music previews",
   icon: "music",
   category: "Media",
-  width: 250,
-  height: 150,
+  width: 300,  // Increased width for better UI
+  height: 180, // Increased height for better UI
   hideAddedState: true, // Don't show checkmark when added
   hideFromLibrary: true, // Hide from library after spawning player
   hideResponseState: true, // Don't show completed state in chat
+  showByDefault: false, // Don't show by default
   
   // Initialize the app egg
   init(containerId) {

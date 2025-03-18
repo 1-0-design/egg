@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iTunes Music Preview Player</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f7;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+        }
+        .search-button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .music-container {
+            height: 250px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            background-color: #fffbe6;
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+    </style>
+</head>
+<body>
+    <h1>iTunes Music Preview Player</h1>
+    
+    <div class="container">
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <p>This demo shows the iTunes Music Preview Player that uses the iTunes API to fetch and play 30-second preview clips. Features:</p>
+            <ul>
+                <li>Search for songs, artists, or albums</li>
+                <li>Play 30-second previews</li>
+                <li>View album artwork</li>
+                <li>Navigate through search results</li>
+            </ul>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Search for songs, artists, or albums...">
+            <button id="search-button" class="search-button">Search</button>
+        </div>
+
+        <div id="music-player-container" class="music-container"></div>
+    </div>
+
+    <script type="module">
+        import MusicPlayer from '/src/components/MusicPlayer.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize music player
+            const player = new MusicPlayer('music-player-container');
+            
+            // Setup search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            
+            searchButton.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    player.search(query);
+                }
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        player.search(query);
+                    }
+                }
+            });
+            
+            // Listen for search results
+            document.addEventListener('musicSearchResults', (e) => {
+                console.log('Search results:', e.detail);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Music Integration Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .music-player {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .album-artwork {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .track-info {
+            flex: 1;
+        }
+        .track-title {
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .track-artist {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .track-album {
+            color: #888;
+            font-size: 16px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            transition: background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #0077ed;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            background-color: #f0f0f0;
+            color: #666;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #0071e3;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .polling-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+        }
+        .instructions {
+            background-color: #fffbe6;
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Apple Music Integration Demo</h1>
+    
+    <div class="instructions">
+        <h3>Instructions:</h3>
+        <p>This demo connects to the Apple Music app on your Mac using AppleScript.</p>
+        <ol>
+            <li>Open the Music app on your Mac</li>
+            <li>Play a song in the Music app</li>
+            <li>Click "Check Now" to see the current track</li>
+            <li>Turn on "Auto Update" to automatically track what's playing</li>
+        </ol>
+        <p><strong>Note:</strong> This demo requires the accompanying Node.js server to be running.</p>
+    </div>
+
+    <div class="container">
+        <h2>Currently Playing in Apple Music</h2>
+        
+        <div id="status-message" class="status">Waiting to check Apple Music...</div>
+        
+        <div id="music-player" class="music-player" style="display: none;">
+            <img id="album-art" src="https://via.placeholder.com/120" alt="Album Artwork" class="album-artwork">
+            <div class="track-info">
+                <div id="track-title" class="track-title">No track selected</div>
+                <div id="track-artist" class="track-artist">-</div>
+                <div id="track-album" class="track-album">-</div>
+                <div class="controls">
+                    <button id="prev-button">Previous</button>
+                    <button id="play-pause-button">Play/Pause</button>
+                    <button id="next-button">Next</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="polling-control">
+            <div>
+                <button id="check-now-button">Check Now</button>
+                <button id="toggle-auto-update">Turn On Auto Update</button>
+            </div>
+            <div>
+                <span id="last-updated"></span>
+                <span id="update-spinner" class="spinner" style="display: none;"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This demo uses AppleScript to communicate with the Apple Music app.</p>
+        <p>Created to demonstrate album art retrieval and media control integration.</p>
+    </div>
+
+    <script>
+        // DOM Elements
+        const statusMessage = document.getElementById('status-message');
+        const musicPlayer = document.getElementById('music-player');
+        const albumArt = document.getElementById('album-art');
+        const trackTitle = document.getElementById('track-title');
+        const trackArtist = document.getElementById('track-artist');
+        const trackAlbum = document.getElementById('track-album');
+        const prevButton = document.getElementById('prev-button');
+        const playPauseButton = document.getElementById('play-pause-button');
+        const nextButton = document.getElementById('next-button');
+        const checkNowButton = document.getElementById('check-now-button');
+        const toggleAutoUpdateButton = document.getElementById('toggle-auto-update');
+        const lastUpdated = document.getElementById('last-updated');
+        const updateSpinner = document.getElementById('update-spinner');
+        
+        // State variables
+        let pollingInterval = null;
+        let isAutoUpdateEnabled = false;
+        let lastTrackId = null;
+
+        // Event listeners
+        checkNowButton.addEventListener('click', checkCurrentTrack);
+        toggleAutoUpdateButton.addEventListener('click', toggleAutoUpdate);
+        prevButton.addEventListener('click', () => controlPlayback('previous'));
+        playPauseButton.addEventListener('click', () => controlPlayback('playpause'));
+        nextButton.addEventListener('click', () => controlPlayback('next'));
+
+        // Functions
+        async function checkCurrentTrack() {
+            updateSpinner.style.display = 'inline-block';
+            statusMessage.className = 'status';
+            statusMessage.textContent = 'Checking Apple Music...';
+            
+            try {
+                const response = await fetch('/api/music-info');
+                if (!response.ok) {
+                    throw new Error(`Error fetching music info: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Update last checked time
+                const now = new Date();
+                lastUpdated.textContent = `Last checked: ${now.toLocaleTimeString()}`;
+                
+                // Process the response
+                if (data.status === 'playing' || data.status === 'paused') {
+                    // Track is available
+                    const track = data.track;
+                    
+                    // Show player UI
+                    musicPlayer.style.display = 'flex';
+                    
+                    // Update track info
+                    trackTitle.textContent = track.name;
+                    trackArtist.textContent = track.artist;
+                    trackAlbum.textContent = track.album;
+                    
+                    // Update album art if available
+                    if (data.artwork && data.artwork.available) {
+                        albumArt.src = data.artwork.path + '?t=' + new Date().getTime(); // Add timestamp to prevent caching
+                    } else {
+                        albumArt.src = 'https://via.placeholder.com/120/cccccc/666666?text=No+Artwork';
+                    }
+                    
+                    // Update status message
+                    statusMessage.className = 'status success';
+                    statusMessage.textContent = `Music is ${data.status} - ${track.name} by ${track.artist}`;
+                    
+                    // Track change detection
+                    if (lastTrackId !== track.id) {
+                        lastTrackId = track.id;
+                        console.log('Track changed:', track.name);
+                    }
+                    
+                } else if (data.status === 'stopped') {
+                    // Music app is running but no track is playing
+                    musicPlayer.style.display = 'none';
+                    statusMessage.className = 'status';
+                    statusMessage.textContent = 'Music app is not playing anything. Play a song in the Music app.';
+                    
+                } else if (data.status === 'not_running') {
+                    // Music app is not running
+                    musicPlayer.style.display = 'none';
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = 'Music app is not running. Please open the Music app first.';
+                    
+                } else if (data.status === 'error') {
+                    // Error occurred
+                    musicPlayer.style.display = 'none';
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = `Error: ${data.message}`;
+                }
+                
+            } catch (error) {
+                console.error('Error checking music:', error);
+                musicPlayer.style.display = 'none';
+                statusMessage.className = 'status error';
+                statusMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                updateSpinner.style.display = 'none';
+            }
+        }
+        
+        function toggleAutoUpdate() {
+            if (isAutoUpdateEnabled) {
+                // Turn off auto-update
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+                toggleAutoUpdateButton.textContent = 'Turn On Auto Update';
+                isAutoUpdateEnabled = false;
+                
+            } else {
+                // Turn on auto-update
+                checkCurrentTrack(); // Initial check
+                pollingInterval = setInterval(checkCurrentTrack, 3000);
+                toggleAutoUpdateButton.textContent = 'Turn Off Auto Update';
+                isAutoUpdateEnabled = true;
+            }
+        }
+        
+        async function controlPlayback(command) {
+            try {
+                updateSpinner.style.display = 'inline-block';
+                
+                const response = await fetch(`/api/music-control?command=${command}`);
+                if (!response.ok) {
+                    throw new Error(`Error controlling playback: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Command was successful, update the UI
+                    checkCurrentTrack();
+                } else {
+                    // Error occurred
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = `Control error: ${data.message}`;
+                }
+                
+            } catch (error) {
+                console.error('Error controlling playback:', error);
+                statusMessage.className = 'status error';
+                statusMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                updateSpinner.style.display = 'none';
+            }
+        }
+        
+        // Initial check 
+        checkCurrentTrack();
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+        <div className="user-status-bar">
+          <div className="user-info">
+            <img className="user-avatar" alt="User" src="https://via.placeholder.com/24/cccccc/666666?text=R" />
+            <div className="user-name">Robert Andersen</div>
+          </div>
+
+          <div className="drag-handle-container" onClick={toggleBottomSheet}>
+            <div className="drag-handle" />
+          </div>
+
+          <div className="status-info">
+            <div className="current-time">{currentTime}</div>
+            <div className="status-indicator" />
+          </div>
+        </div>

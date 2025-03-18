@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg Tray Simple</title>
+    <link rel="stylesheet" href="static/egg-tray-clean.css">
+    <link rel="stylesheet" href="static/widgets.css">
+    <style>
+        /* Font fallbacks */
+        @font-face {
+            font-family: "Cash Sans-Medium";
+            src: local("SF Pro Text"), local("Helvetica Neue"), local("Helvetica"), local("Arial"), sans-serif;
+            font-weight: 500;
+        }
+        
+        @font-face {
+            font-family: "Cash Sans-Semibold";
+            src: local("SF Pro Text"), local("Helvetica Neue"), local("Helvetica"), local("Arial"), sans-serif;
+            font-weight: 600;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            background: #f5f5f7;
+        }
+        
+        .content {
+            padding: 20px;
+            height: 200vh; /* Make page scrollable to test fixed positioning */
+        }
+        
+        h1 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Egg Tray - Clean Implementation</h1>
+        <p>This is a simplified implementation that follows the exact structure from your React component.</p>
+    </div>
+
+    <!-- Exact structure from your React component -->
+    <div class="egg-tray">
+      <div class="frame-7">
+        <div class="text-wrapper-6">ask for anything</div>
+
+        <div class="more-button-wrapper">
+          <div class="icons-mic-wrapper">
+            <!-- SVG Mic icon -->
+            <svg class="icons-mic" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19 11C19 15.4183 15.8519 18 12 18C8.14806 18 5 15.4183 5 11" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 18V22" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <button class="div-wrapper">
+          <button class="button">
+            <div class="text-wrapper-7">send</div>
+          </button>
+        </button>
+      </div>
+
+      <div class="frame-8">
+        <div class="frame-9">
+          <img class="image" alt="Image" src="/static/profile.svg" />
+          <div class="text-wrapper-8">Robert Andersen</div>
+        </div>
+
+        <div class="rectangle-wrapper">
+          <div class="rectangle-6"></div>
+        </div>
+
+        <div class="frame-9">
+          <div class="text-wrapper-9">9:28 PM</div>
+          <div class="ellipse"></div>
+        </div>
+      </div>
+
+      <div class="frame-10">
+        <!-- Weather Widget -->
+        <div class="eggs-weather-sunny">
+          <div class="frame">
+            <div class="frame-2">
+              <div class="text-wrapper">Sunny</div>
+              <div class="text-wrapper-2">San Francisco</div>
+            </div>
+            <div class="more-button">
+              <img class="more-icon" alt="More icon" src="/static/more-icon.svg" />
+            </div>
+          </div>
+          <div class="frame-3">
+            <div class="text-wrapper-3">72°</div>
+            <img class="icons-sun-instance" alt="Sun icon" src="/static/sun-icon.svg" />
+          </div>
+        </div>
+
+        <!-- Music Widget -->
+        <div class="eggs-music eggs-music-instance">
+          <div class="overlap-group">
+            <div class="frame">
+              <div class="frame-2">
+                <div class="text-wrapper">Now Playing</div>
+                <div class="text-wrapper-2">Taylor Swift - Cruel Summer</div>
+              </div>
+              <div class="more-button">
+                <img class="more-icon" alt="More icon" src="/static/more-icon.svg" />
+              </div>
+            </div>
+            <div class="frame-3">
+              <img class="album-artwork" alt="Album artwork" src="/static/default-album.svg" />
+              <div class="timeline">
+                <div class="rectangle-5"></div>
+              </div>
+              <div class="pause-button">
+                <div class="play-icon"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Just to update the time in the demo
+      function updateTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        const timeElement = document.querySelector('.text-wrapper-9');
+        if (timeElement) {
+          timeElement.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+        }
+      }
+      
+      // Update time on page load
+      updateTime();
+      
+      // Update time every minute
+      setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>

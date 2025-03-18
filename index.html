@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Egg - AI Assistant</title>
+    <link rel="stylesheet" href="new-theme.css">
+    <!-- Original styles preserved as fallback -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="src/styles/goose-settings.css">
     <link rel="stylesheet" href="src/styles/icons.css">
     <link rel="stylesheet" href="src/styles/app-eggs.css">
+    <link rel="stylesheet" href="src/styles/egg-tray.css">
+    <style>
+        /* Fix for egg-tray positioning */
+        .egg-tray {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+    </style>
 </head>
 <body class="font-size-base">
+    <div id="root">
     <div class="app-container">
         <!-- Eggs Container (top of screen) -->
         <div class="eggs-container">
@@ -174,8 +189,13 @@
             </div>
         </div>
     </div>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- Egg Tray Container -->
+    <div id="egg-tray" class="egg-tray"></div>
+
+    <script src="script.js" type="module"></script>
+    <script src="static/eggTray.js"></script>
     <script type="module">
         import GooseSettings from './src/components/GooseSettings.js';
         

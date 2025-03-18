@@ -1,0 +1,86 @@
+.eggs-weather-sunny {
+  background-color: #4cbeff;
+  border-radius: 30px;
+  height: 200px;
+  padding: 30px;
+  width: 300px;
+}
+
+.eggs-weather-sunny .frame {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.eggs-weather-sunny .frame-2 {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eggs-weather-sunny .text-wrapper {
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.eggs-weather-sunny .text-wrapper-2 {
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.eggs-weather-sunny .more-button {
+  align-items: center;
+  background-color: #0000001a;
+  border-radius: 100px;
+  display: inline-flex;
+  gap: 6px;
+  height: 24px;
+  justify-content: center;
+  padding: 6px;
+  position: relative;
+  width: 24px;
+}
+
+.eggs-weather-sunny .frame-3 {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.eggs-weather-sunny .text-wrapper-3 {
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.eggs-weather-sunny .icons-sun-instance {
+  height: 48px !important;
+  position: relative !important;
+  width: 48px !important;
+}
