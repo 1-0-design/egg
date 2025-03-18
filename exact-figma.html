@@ -35,7 +35,7 @@
             justify-content: center;
         }
         
-        /* Exact JSX/CSS implementation */
+        /* Content styles */
         .content {
           align-items: flex-start;
           display: flex;
@@ -57,7 +57,7 @@
           flex-grow: 1;
           gap: 15px;
           overflow-y: scroll;
-          padding: 30px 30px 150px; /* Added bottom padding to account for fixed egg-tray */
+          padding: 30px 30px 150px;
           position: relative;
           width: 100%;
         }
@@ -80,16 +80,21 @@
           text-align: center;
         }
 
-        .content .response {
+        /* Message containers */
+        .frame-wrapper {
           align-self: stretch;
           height: 60px;
           position: relative;
           width: 100%;
+          display: flex;
         }
 
-        .content .frame {
+        .frame-wrapper.right {
+          justify-content: flex-end;
+        }
+
+        .message-bubble {
           align-items: center;
-          background-color: #000000;
           border-radius: 100px;
           box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.25), 0px 5px 15px rgba(0, 0, 0, 0.15);
           display: inline-flex;
@@ -99,22 +104,130 @@
           position: relative;
         }
 
-        .content .div {
+        .message-bubble.assistant {
+          background-color: #000000;
           color: #ffffff;
+        }
+
+        .message-bubble.user {
+          background-color: #ffffff;
+          color: #000000;
+        }
+
+        /* Weather egg component */
+        .egg-response {
+          align-items: center;
+          align-self: stretch;
+          display: flex;
+          gap: 30px;
+          position: relative;
+          width: 100%;
+          justify-content: flex-start;
+          margin: 15px 0;
+        }
+
+        .weather-egg {
+          background-color: #4cbeff;
+          border-radius: 30px;
+          box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
+          height: 200px;
+          overflow: hidden;
+          position: relative;
+          width: 320px;
+        }
+
+        .weather-egg .frame {
+          align-items: flex-start;
+          display: flex;
+          justify-content: space-between;
+          left: 30px;
+          position: absolute;
+          top: 30px;
+          width: 260px;
+        }
+
+        .weather-egg .location-info {
+          align-items: flex-start;
+          align-self: stretch;
+          display: inline-flex;
+          flex: 0 0 auto;
+          flex-direction: column;
+          justify-content: space-between;
+          position: relative;
+        }
+
+        .weather-egg .location {
+          align-self: stretch;
+          color: #000000;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -1.00px;
+          position: relative;
+        }
+
+        .weather-egg .condition {
+          align-self: stretch;
+          color: #000000;
           font-family: "Cash Sans-Medium", Helvetica;
           font-size: 18px;
           font-weight: 500;
           letter-spacing: 0;
           line-height: normal;
-          margin-top: -0.50px;
           position: relative;
-          white-space: nowrap;
-          width: fit-content;
         }
 
+        .weather-egg .more-button {
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 24px;
+          display: flex;
+          gap: 10px;
+          height: 48px;
+          padding: 12px;
+          position: relative;
+          width: 48px;
+        }
+
+        .weather-egg .icons-dots {
+          height: 24px;
+          position: relative;
+          width: 24px;
+        }
+
+        .weather-egg .frame-2 {
+          align-items: flex-end;
+          display: flex;
+          justify-content: space-between;
+          left: 30px;
+          position: absolute;
+          bottom: 30px;
+          width: 260px;
+        }
+
+        .weather-egg .temperature {
+          color: #000000;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 64px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+          white-space: nowrap;
+        }
+
+        .weather-egg .icons-sun {
+          height: 48px;
+          width: 48px;
+          position: relative;
+          margin-bottom: 8px;
+        }
+
+        /* Egg tray styles */
         .egg-tray {
           -webkit-backdrop-filter: blur(25px) brightness(100%);
-          align-items: center;
           backdrop-filter: blur(25px) brightness(100%);
           background-color: rgba(255, 255, 255, 0.3);
           border-radius: 60px 60px 0px 0px;
@@ -133,7 +246,7 @@
           z-index: 100;
         }
 
-        .egg-tray .frame-2 {
+        .egg-tray .input-frame {
           align-items: center;
           align-self: stretch;
           background-color: #ffffff;
@@ -148,7 +261,7 @@
           width: 100%;
         }
 
-        .egg-tray .text-wrapper-2 {
+        .egg-tray .input-text {
           align-self: stretch;
           color: #000000;
           flex: 1;
@@ -161,20 +274,209 @@
           white-space: nowrap;
         }
 
-        .egg-tray .more-button-wrapper {
+        .egg-tray .button-wrapper {
           align-items: center;
           background-color: rgba(0, 0, 0, 0.05);
           border-radius: 100px;
           display: inline-flex;
-          flex: 0 0 auto;
           gap: 6px;
-          margin-bottom: -17.00px;
-          margin-top: -17.00px;
+          margin: -17px 0;
           position: relative;
         }
 
-        .egg-tray .more-button {
+        .egg-tray .mic-button {
           align-items: center;
+          border-radius: 24px;
+          display: flex;
+          gap: 10px;
+          height: 48px;
+          padding: 12px;
+          position: relative;
+          width: 48px;
+          cursor: pointer;
+        }
+
+        .egg-tray .send-button {
+          all: unset;
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 100px;
+          box-sizing: border-box;
+          display: flex;
+          margin: -17px 0;
+          padding: 0 20px;
+          height: 48px;
+          justify-content: center;
+          cursor: pointer;
+          color: #000000;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+        }
+
+        .egg-tray .status-bar {
+          align-items: center;
+          align-self: stretch;
+          display: flex;
+          gap: 30px;
+          justify-content: center;
+          padding: 0px 30px;
+          position: relative;
+          width: 100%;
+        }
+
+        .egg-tray .user-info {
+          align-items: center;
+          display: flex;
+          flex: 1;
+          gap: 15px;
+          position: relative;
+          height: 48px;
+        }
+
+        .egg-tray .user-avatar {
+          height: 24px;
+          width: 24px;
+          border-radius: 50%;
+          background-color: #ccc;
+        }
+
+        .egg-tray .user-name {
+          color: #000000;
+          flex: 1;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+        }
+
+        .egg-tray .divider {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .egg-tray .divider-line {
+          background-color: #000000;
+          border-radius: 7px;
+          height: 8px;
+          width: 50px;
+        }
+
+        .egg-tray .status-info {
+          align-items: center;
+          display: flex;
+          flex: 1;
+          gap: 15px;
+          justify-content: flex-end;
+        }
+
+        .egg-tray .time {
+          color: #000000;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          letter-spacing: 0;
+          line-height: normal;
+          text-align: right;
+        }
+
+        .egg-tray .model {
+          color: #000000;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 400;
+          letter-spacing: 0;
+          line-height: normal;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .egg-tray .status-indicator {
+          background-color: #0fea21;
+          border-radius: 12px;
+          height: 24px;
+          width: 24px;
+        }
+
+        .egg-collection {
+          align-items: center;
+          display: flex;
+          gap: 30px;
+          position: relative;
+          width: 100%;
+          justify-content: center;
+        }
+
+        /* Music egg styles */
+        .eggs-music {
+          background-image: url(assets/music.svg);
+          background-position: 50% 50%;
+          background-size: cover;
+          border-radius: 30px;
+          box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15), inset 0px 1px 1px rgba(255, 255, 255, 0.25);
+          height: 200px;
+          overflow: hidden;
+          width: 320px;
+        }
+
+        .eggs-music .overlap-group {
+          -webkit-backdrop-filter: blur(25px) brightness(100%);
+          backdrop-filter: blur(25px) brightness(100%);
+          background-color: rgba(255, 255, 255, 0.3);
+          height: 200px;
+          position: relative;
+        }
+
+        .eggs-music .frame {
+          align-items: flex-start;
+          display: flex;
+          justify-content: space-between;
+          left: 30px;
+          position: absolute;
+          top: 30px;
+          width: 260px;
+        }
+
+        .eggs-music .info {
+          align-items: flex-start;
+          align-self: stretch;
+          display: inline-flex;
+          flex: 0 0 auto;
+          flex-direction: column;
+          justify-content: space-between;
+          position: relative;
+        }
+
+        .eggs-music .song-title {
+          align-self: stretch;
+          color: #000000;
+          font-family: "Cash Sans-Semibold", Helvetica;
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: 0;
+          line-height: normal;
+          margin-top: -1.00px;
+          position: relative;
+        }
+
+        .eggs-music .artist {
+          align-self: stretch;
+          color: #000000;
+          font-family: "Cash Sans-Medium", Helvetica;
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: normal;
+          position: relative;
+        }
+
+        .eggs-music .more-button {
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.05);
           border-radius: 24px;
           display: flex;
           gap: 10px;
@@ -184,164 +486,63 @@
           width: 48px;
         }
 
-        .egg-tray .icons-mic {
-          flex: 0 0 auto !important;
-          position: relative !important;
-        }
-
-        .egg-tray .div-wrapper {
-          all: unset;
-          align-items: center;
-          background-color: rgba(0, 0, 0, 0.05);
-          border-radius: 100px;
-          box-sizing: border-box;
-          display: inline-flex;
-          margin-bottom: -17.00px;
-          margin-top: -17.00px;
-          position: relative;
-          height: 48px;
-          padding: 0 20px;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        .egg-tray .button {
-          all: unset;
-          align-items: center;
-          border-radius: 24px;
-          box-sizing: border-box;
-          display: flex;
-          height: 48px;
-          padding: 0 15px;
-          position: relative;
-          background: transparent;
-          cursor: pointer;
-        }
-
-        .egg-tray .text-wrapper-3 {
-          color: #000000;
-          font-family: "Cash Sans-Medium", Helvetica;
-          font-size: 18px;
-          font-weight: 500;
-          letter-spacing: 0;
-          line-height: normal;
-          position: relative;
-          text-align: center;
-          white-space: nowrap;
-        }
-
-        .egg-tray .frame-3 {
-          align-items: center;
-          align-self: stretch;
-          display: flex;
-          flex: 0 0 auto;
-          gap: 30px;
-          justify-content: center;
-          padding: 0px 30px;
-          position: relative;
-          width: 100%;
-        }
-
-        .egg-tray .frame-4 {
-          align-items: center;
-          display: flex;
-          flex: 1;
-          flex-grow: 1;
-          gap: 15px;
-          position: relative;
-          height: 48px;
-        }
-
-        .egg-tray .image {
+        .eggs-music .icons-dots {
           height: 24px;
+          position: relative;
+          width: 24px;
+        }
+
+        .eggs-music .frame-2 {
+          align-items: center;
+          display: flex;
+          gap: 30px;
+          left: 30px;
+          position: absolute;
+          top: 122px;
+          width: 260px;
+        }
+
+        .eggs-music .album-artwork {
+          height: 48px;
+          width: 48px;
           object-fit: cover;
           position: relative;
-          width: 24px;
-          border-radius: 50%;
-          background-color: #ccc;
+          border-radius: 4px;
         }
 
-        .egg-tray .text-wrapper-4 {
-          color: #000000;
-          flex: 1;
-          font-family: "Cash Sans-Semibold", Helvetica;
-          font-size: 18px;
-          font-weight: 400;
-          letter-spacing: 0;
-          line-height: normal;
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .egg-tray .rectangle-wrapper {
-          align-self: stretch;
+        .eggs-music .timeline {
+          background-color: rgba(0, 0, 0, 0.15);
+          border-radius: 3px;
           flex: 1;
           flex-grow: 1;
+          height: 6px;
           position: relative;
+        }
+
+        .eggs-music .rectangle {
+          background-color: #000000;
+          border-radius: 3px;
+          height: 6px;
+          width: 18px;
+        }
+
+        .eggs-music .play {
+          align-items: center;
           display: flex;
           justify-content: center;
-          align-items: center;
-        }
-
-        .egg-tray .rectangle {
-          background-color: #000000;
-          border-radius: 7px;
-          height: 8px;
+          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 24px;
+          height: 48px;
+          width: 48px;
           position: relative;
-          width: 50px;
         }
 
-        .egg-tray .text-wrapper-5 {
-          color: #000000;
-          flex: 1;
-          font-family: "Cash Sans-Semibold", Helvetica;
-          font-size: 18px;
-          font-weight: 400;
-          letter-spacing: 0;
-          line-height: normal;
-          position: relative;
-          text-align: right;
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-        }
-
-        .egg-tray .text-wrapper-6 {
-          color: #ff7e07;
-          font-family: "Cash Sans-Semibold", Helvetica;
-          font-size: 18px;
-          font-weight: 400;
-          letter-spacing: 0;
-          line-height: normal;
-          position: relative;
-          text-align: right;
-          white-space: nowrap;
-          width: fit-content;
-          display: flex;
-          align-items: center;
-        }
-
-        .egg-tray .ellipse {
-          border: 3px solid;
-          border-color: #ff7e07;
-          border-radius: 12px;
+        .eggs-music .icons-pause {
           height: 24px;
-          position: relative;
           width: 24px;
+          position: relative;
         }
-        
-        /* Responsive adjustments */
-        @media (max-width: 2500px) {
-            .content {
-                width: 100%;
-            }
-            
-            .content .egg-tray {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
+
     </style>
 </head>
 <body>
@@ -349,45 +550,117 @@
       <div class="chat">
         <div class="text-wrapper">9:24 PM</div>
 
-        <div class="response">
-          <div class="frame">
-            <p class="div">Welcome to Egg OS. Please link an API key.</p>
+        <!-- Welcome message -->
+        <div class="frame-wrapper">
+          <div class="message-bubble assistant">
+            <div class="text">Welcome back, Robert</div>
+          </div>
+        </div>
+
+        <!-- User message -->
+        <div class="frame-wrapper right">
+          <div class="message-bubble user">
+            <div class="text">what's the local weather</div>
+          </div>
+        </div>
+
+        <!-- Assistant response -->
+        <div class="frame-wrapper">
+          <div class="message-bubble assistant">
+            <div class="text">Here you go</div>
+          </div>
+        </div>
+
+        <!-- Weather egg -->
+        <div class="egg-response">
+          <div class="weather-egg">
+            <div class="frame">
+              <div class="location-info">
+                <div class="location">KILAUEA, HI</div>
+                <div class="condition">PARTLY CLOUDY</div>
+              </div>
+              <div class="more-button">
+                <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
+              </div>
+            </div>
+            <div class="frame-2">
+              <div class="temperature">30° F</div>
+              <img class="icons-sun" src="assets/icons/sun.svg" alt="Sun">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="egg-tray">
-        <div class="frame-2">
-          <div class="text-wrapper-2">ask for anything</div>
 
-          <div class="more-button-wrapper">
-            <div class="more-button">
-              <!-- Microphone SVG Icon -->
-              <img src="assets/icons/mic.svg" class="icons-mic" alt="Microphone" width="24" height="24">
+      <div class="egg-tray">
+        <div class="input-frame">
+          <div class="input-text">ask for anything</div>
+
+          <div class="button-wrapper">
+            <div class="mic-button">
+              <img src="assets/icons/mic.svg" alt="Microphone" width="24" height="24">
             </div>
           </div>
 
-          <button class="div-wrapper">
-            <div class="text-wrapper-3">send</div>
+          <button class="send-button">
+            <div class="text">send</div>
           </button>
         </div>
 
-        <div class="frame-3">
-          <div class="frame-4">
-            <!-- User avatar -->
-            <div class="image"></div>
-            <div class="text-wrapper-4">Log In</div>
+        <div class="status-bar">
+          <div class="user-info">
+            <img class="user-avatar" src="assets/images/robert_avatar.jpg" alt="Robert Andersen">
+            <div class="user-name">Robert Andersen</div>
           </div>
 
-          <div class="rectangle-wrapper">
-            <div class="rectangle"></div>
+          <div class="divider">
+            <div class="divider-line"></div>
           </div>
 
-          <div class="frame-4">
-            <div class="text-wrapper-5">9:28 PM</div>
-            <div class="text-wrapper-6">Configure</div>
-            <div class="ellipse"></div>
+          <div class="status-info">
+            <div class="time">9:28 PM</div>
+            <div class="model">Claude 3.7</div>
+            <div class="status-indicator"></div>
+          </div>
+        </div>
+
+        <div class="egg-collection">
+          <div class="weather-egg">
+            <div class="frame">
+              <div class="location-info">
+                <div class="location">KILAUEA, HI</div>
+                <div class="condition">PARTLY CLOUDY</div>
+              </div>
+              <div class="more-button">
+                <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
+              </div>
+            </div>
+            <div class="frame-2">
+              <div class="temperature">30° F</div>
+              <img class="icons-sun" src="assets/icons/sun.svg" alt="Sun">
+            </div>
+          </div>
+
+          <div class="eggs-music">
+            <div class="overlap-group">
+              <div class="frame">
+                <div class="info">
+                  <div class="song-title">ALONE</div>
+                  <div class="artist">THE CURE</div>
+                </div>
+                <div class="more-button">
+                  <img class="icons-dots" src="assets/icons/dots.svg" alt="More options">
+                </div>
+              </div>
+              <div class="frame-2">
+                <img class="album-artwork" src="assets/alone-album.jpg" alt="Album artwork">
+                <div class="timeline">
+                  <div class="rectangle"></div>
+                </div>
+                <div class="play">
+                  <img class="icons-pause" src="assets/icons/pause.svg" alt="Pause">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -403,16 +676,11 @@
         const formattedHours = hours % 12 || 12;
         const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
         
-        const timeDisplay = document.querySelector('.text-wrapper');
-        const timeDisplay2 = document.querySelector('.text-wrapper-5');
-        
-        if (timeDisplay) {
-          timeDisplay.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
-        }
-        
-        if (timeDisplay2) {
-          timeDisplay2.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
-        }
+        // Update all time displays
+        const timeDisplays = document.querySelectorAll('.text-wrapper, .time');
+        timeDisplays.forEach(display => {
+          display.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+        });
       }
       
       // Update time on page load
