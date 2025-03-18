@@ -1,17 +1,23 @@
-# Node.js
+# Development files
+*.css
+!assets/css/*.css
+*-temp.html
+*-template.js
+temp-*.html
+*-fixed.js
+*-new.js
+*-simple.js
+create-*.js
+egg-template.js
+suggestion-template.js
+
+# Screenshots and temporary files
+Screenshot*.png
+
+# Configuration
+.goose/
+nodemon.json
+
+# Node
 node_modules/
-npm-debug.log
-package-lock.json
-
-# Environment variables
-.env
-
-# Build output
-dist/
-
-# Mac OS
-.DS_Store
-
-# Editor files
-.vscode/
-.idea/
+npm-debug.log*
